@@ -8,6 +8,17 @@ export default {
         borderRadius: 20,
         marginTop: 10
     },
+    buttonStyle2: {
+        backgroundColor: '#FFFFFF',
+        borderRadius: 4,
+        borderColor: '#FE5F55',
+        borderWidth: 1,
+        marginTop: 10
+    },
+    buttonTitleStyle2: {
+        color: '#FE5F55',
+        fontSize: 15
+    },
     navBarStyles: {
         headerTintColor: "#fe5f55",
         headerTitleStyle: {
