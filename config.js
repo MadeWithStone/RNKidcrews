@@ -1,7 +1,7 @@
 export default {
     buttonColor: "#fe5f55",
     buttonBorderRadius: 10,
-    server: "http://192.168.87.128",
+    server: "http://kidcrews.com",
     logo_horizonatal: require("./assets/logo_horizontal.png"),
     buttonStyle: {
         backgroundColor: '#FE5F55',
