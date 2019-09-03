@@ -4,6 +4,7 @@ import { createStackNavigator, createAppContainer, createBottomTabNavigator } fr
 import { AsyncStorage } from '@react-native-community/async-storage'
 import Config from './config'
 import ProfileScreen from './ProfileScreen';
+import EditProfileScreen from './EditProfileScreen'
 
 class FeedScreen extends Component {
 
@@ -18,7 +19,10 @@ class FeedScreen extends Component {
 
 
 const feed = createStackNavigator({ FeedScreen }, { defaultNavigationOptions: Config.navBarStyles })
-const profile = createStackNavigator({ ProfileScreen }, { defaultNavigationOptions: Config.navBarStyles })
+const profile = createStackNavigator({
+    Profile: ProfileScreen,
+    Edit: EditProfileScreen
+}, { defaultNavigationOptions: Config.navBarStyles })
 
 const TabNavigator = createBottomTabNavigator(
     {

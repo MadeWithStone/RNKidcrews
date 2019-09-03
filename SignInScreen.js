@@ -154,6 +154,5 @@ const styles = StyleSheet.create({
         borderColor: '#fe5f55',
         borderWidth: StyleSheet.hairlineWidth,
         borderRadius: 10,
-
     }
 })
