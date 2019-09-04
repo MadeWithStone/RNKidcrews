@@ -225,7 +225,6 @@ export default class ProfileScreen extends Component {
                 <View style={{ flex: 1, padding: 10 }}>
                     <Text>Email: {this.state.user.email}</Text>
                     <Text>Address: {this.state.user.address}</Text>
-                    <Button buttonStyle={Config.buttonStyle2} titleStyle={Config.buttonTitleStyle2} title="Edit Profile" />
 
                 </View>
                 <View style={{ flex: 1, flexDirection: "row", borderTopColor: "#495867", borderTopWidth: StyleSheet.hairlineWidth }} >
