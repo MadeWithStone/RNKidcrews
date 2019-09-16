@@ -53,5 +53,9 @@
 	</array>
 	<key>UIViewControllerBasedStatusBarAppearance</key>
 	<false/>
+	<key>NSPhotoLibraryUsageDescription</key>
+	<string>Kidcrews would like to use your image library for your Profile Image.</string>
+	<key>NSCameraUsageDescription</key>
+	<string>Kidcrews would like to use your camera for your Profile Image.</string>
 </dict>
 </plist>
