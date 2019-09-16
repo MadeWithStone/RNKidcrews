@@ -111,23 +111,18 @@ export default class EditProfileScreen extends Component {
             } else if (response.customButton) {
                 console.log('User tapped custom button: ', response.customButton);
             } else {
-                const source = { uri: response.uri };
+                var source = { uri: response.uri };
+                let fileName = response.fileName
+                if (Platform.OS === 'ios' && (fileName.endsWith('.heic') || fileName.endsWith('.HEIC'))) {
+                    fileName = `${fileName.split(".")[0]}.JPG`;
+                }
+                source = { uri: response.uri, fileName };
 
                 // You can also display the image using data:
                 // const source = { uri: 'data:image/jpeg;base64,' + response.data };
                 var image = this.state.user
                 image.profileImage = source
                 console.log('response data', response.data)
-
-
-
-                RNHeicConverter.convert({ path: this.state.user.userImage }).then((result) => {
-                    let user = this.state.user
-                    user.userImage = result.path
-                    this.setState({
-                        user: user
-                    })
-                })
 
                 this.setState({
                     user: image,
@@ -143,7 +138,7 @@ export default class EditProfileScreen extends Component {
                 let server = Config.server + "/api/users/image"
                 //let body = this.createFormData(this.state.userImage, {})
                 let body = {
-                    'photo': this.state.profileImage
+                    'photo': this.state.user.profileImage
                 }
                 console.log(body)
                 console.log("fetching")
