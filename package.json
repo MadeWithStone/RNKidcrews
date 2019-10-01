@@ -9,6 +9,9 @@
   },
   "dependencies": {
     "@react-native-community/async-storage": "^1.6.1",
+    "amplify": "0.0.11",
+    "aws-amplify": "^1.1.40",
+    "aws-amplify-react-native": "^2.1.19",
     "aws-sdk": "^2.528.0",
     "navigationbar-react-native": "0.0.5",
     "react": "16.8.6",

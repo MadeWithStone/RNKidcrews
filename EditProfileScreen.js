@@ -20,7 +20,8 @@ export default class EditProfileScreen extends Component {
         }
         this.linkedPeopleEle = this.linkedPeopleEle.bind(this)
         this.userImage = this.userImage.bind(this)
-
+        this.getUserData = this.getUserData.bind(this)
+        this.save = this.save.bind(this)
     }
 
     static navigationOptions = ({ navigation }) => {
@@ -39,7 +40,6 @@ export default class EditProfileScreen extends Component {
             this.setState({
                 token: data.Token
             })
-            this.signIn()
             return "true"
         } catch (error) {
             console.log("load error: " + error)
@@ -50,6 +50,7 @@ export default class EditProfileScreen extends Component {
 
 
     async componentDidMount() {
+        this.props.navigation.setParams({ Save: () => this.saveUserData })
         let user = this.state.user
         user.linkedPeople = [{
             id: 0,
@@ -66,7 +67,8 @@ export default class EditProfileScreen extends Component {
         })
         this.load('currentUser')
         console.log('linked: ' + this.state.linkedPeople)
-
+        console.log('image: ' + this.state.user.profileImage)
+        //this.getUserData()
     }
 
     async linkedPeopleEle() {
@@ -76,7 +78,7 @@ export default class EditProfileScreen extends Component {
             await this.state.user.linkedPeople.map((user) => {
                 list.push(
                     < TouchableOpacity key={user.id} >
-                        <Image style={{ flex: 1, height: width * 0.2, width: width * 0.2, borderRadius: width * 0.1 }} source={this.state.user.profileImage} />
+                        <Image style={{ flex: 1, height: width * 0.2, width: width * 0.2, borderRadius: width * 0.1 }} source={{ uri: this.state.user.profileImage }} />
                     </TouchableOpacity >
                 )
             })
@@ -85,6 +87,38 @@ export default class EditProfileScreen extends Component {
             console.log(error)
             return true
         }
+    }
+
+    async saveUserData() {
+
+        let server = Config.server + "/api/users/update"
+        //let body = this.createFormData(this.state.userImage, {})
+        const body = {
+            user: this.state.user
+        }
+
+
+        console.log(body)
+        console.log("fetching")
+        fetch(server, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'Token': 'Token ' + this.state.user.token
+            },
+            body: body
+        })
+            .then((response) => response.json())
+            .then(async (responseJSON) => {
+                console.log(responseJSON)
+
+
+            })
+            .catch((error) => {
+                alert("error")
+                console.log("error: " + error + "; server: " + server + "; json: " + body)
+            })
+
     }
 
     async userImage() {
@@ -113,16 +147,14 @@ export default class EditProfileScreen extends Component {
             } else {
                 var source = { uri: response.uri };
                 let fileName = response.fileName
-                if (Platform.OS === 'ios' && (fileName.endsWith('.heic') || fileName.endsWith('.HEIC'))) {
-                    fileName = `${fileName.split(".")[0]}.JPG`;
-                }
+
+                fileName = this.state.user._id + '_pi.jpg'
                 source = { uri: response.uri, fileName };
 
                 // You can also display the image using data:
                 // const source = { uri: 'data:image/jpeg;base64,' + response.data };
                 var image = this.state.user
                 image.profileImage = source
-                console.log('response data', response.data)
 
                 this.setState({
                     user: image,
@@ -137,22 +169,35 @@ export default class EditProfileScreen extends Component {
 
                 let server = Config.server + "/api/users/image"
                 //let body = this.createFormData(this.state.userImage, {})
-                let body = {
-                    'photo': this.state.user.profileImage
-                }
+                const body = new FormData()
+                let name = fileName
+
+                body.append(
+                    'file', {
+                    uri: this.state.user.profileImage.uri,
+                    type: "image/" + response.fileName,
+                    name: name,
+                })
+                body.append(
+                    '_id', this.state.user._id
+                )
+
                 console.log(body)
                 console.log("fetching")
                 fetch(server, {
                     method: 'POST',
                     headers: {
-                        'Content-Type': 'image/jpg',
-                        'Token': 'Token ' + this.state.token
+                        'Content-Type': 'multipart/form-data',
+                        'Token': 'Token ' + this.state.user.token
                     },
                     body: body
                 })
-                    .then((response) => response.text())
+                    .then((response) => response.json())
                     .then(async (responseJSON) => {
                         console.log(responseJSON)
+                        var data = responseJSON
+                        console.log('responseJSON: ' + data)
+                        this.getUserData()
 
                     })
                     .catch((error) => {
@@ -180,6 +225,47 @@ export default class EditProfileScreen extends Component {
         return data;
     };
 
+    async getUserData() {
+        if (this.state.user._id != null) {
+
+            let server = Config.server + "/api/users/current"
+            let body = JSON.stringify({
+                id: this.state.user._id
+            })
+
+            let headers = {
+                'Content-Type': 'application/json',
+                "authorization": "Token " + this.state.user.token
+            }
+            fetch(server, {
+                method: 'POST',
+                headers: headers,
+                body: body
+            })
+                .then((response) => response.json())
+                .then(async (responseJson) => {
+                    var user = responseJson.user
+                    user.password = this.state.user.password
+                    this.save(user, 'currentUser')
+                    console.log('user: ' + JSON.stringify(user))
+                    //await this.save(user, 'currentUser')
+
+                })
+                .catch((error) => {
+                    alert("error")
+                    console.log("error: " + error + "; server: " + server + "; json: " + body + "; headers: " + headers)
+                })
+        }
+    }
+
+    async save(data, key) {
+        try {
+            await AsyncStorage.setItem(key, JSON.stringify(data))
+        } catch (error) {
+            console.log("save error: " + error)
+        }
+    }
+
     render() {
 
         const styles = StyleSheet.create({
@@ -197,11 +283,12 @@ export default class EditProfileScreen extends Component {
 
         let width = this.state.width
         let right = (width - 120)
+        console.log('image: ' + this.state.user.profileImage)
         return (
 
             <ScrollView>
                 <View style={{ flex: 1, alignItems: 'center', padding: 10, borderBottomColor: "#495867", borderBottomWidth: StyleSheet.hairlineWidth }}>
-                    <Image source={this.state.user.profileImage} style={{ width: width * 0.3, height: width * 0.3, borderRadius: (width * 0.3) / 2, marginBottom: 10 }} />
+                    <Image source={{ uri: this.state.user.profileImage }} style={{ width: width * 0.3, height: width * 0.3, borderRadius: (width * 0.3) / 2, marginBottom: 10 }} />
                     <TouchableOpacity onPress={this.userImage} style={{}}><Text style={{ color: "#fe5f55" }}>Change Profile Photo</Text></TouchableOpacity>
                 </View>
                 <View style={{ flex: 1, flexDirection: "row", padding: 5, borderBottomColor: "#495867", alignItems: 'stretch', justifyContent: 'center' }}>
@@ -215,13 +302,70 @@ export default class EditProfileScreen extends Component {
                         <Text style={styles.textT}>Address</Text>
                     </View>
                     <View style={{ marginLeft: 5, marginRight: 5, width: right }}>
-                        <TextInput placeholder="Username" style={styles.textI} autoCapitalize="none" />
-                        <TextInput placeholder="First Name" value={this.state.user.firstName} style={styles.textI} />
-                        <TextInput placeholder="Last Name" style={styles.textI} />
-                        <TextInput placeholder="Zipcode" style={styles.textI} />
-                        <TextInput placeholder="Email" style={styles.textI} autoCapitalize="none" />
-                        <TextInput placeholder="Age" style={styles.textI} />
-                        <TextInput placeholder="Address" style={styles.textI} multiline={true} />
+                        <TextInput
+                            placeholder="Username"
+                            onChangeText={(username) => { let user = this.state.user; user.username = username; this.setState({ user }) }}
+                            value={this.state.user.username}
+                            style={styles.textI}
+                            autoCapitalize="none"
+                            autoCompleteType='username'
+                            textContentType='username'
+                        />
+                        <TextInput
+                            placeholder="First Name"
+                            onChangeText={(fName) => { let user = this.state.user; user.firstName = fName; this.setState({ user }) }}
+                            value={this.state.user.firstName}
+                            style={styles.textI}
+                            autoCompleteType='name'
+                            textContentType='givenName'
+                        />
+                        <TextInput
+                            placeholder="Last Name"
+                            onChangeText={(lName) => { let user = this.state.user; user.lastName = lName; this.setState({ user }) }}
+                            value={this.state.user.lastName}
+                            style={styles.textI}
+                            autoCompleteType='name'
+                            textContentType='familyName'
+                        />
+
+                        <TextInput
+                            placeholder="Zipcode"
+                            onChangeText={(zip) => { let user = this.state.user; user.zip = zip; this.setState({ user }) }}
+                            value={this.state.user.zip}
+                            style={styles.textI}
+                            placeholder={"Zipcode"}
+                            autoCompleteType="postal-code"
+                            textContentType="postalCode"
+                            autoCapitalize='none'
+                            keyboardType='number-pad'
+                        />
+
+                        <TextInput
+                            placeholder="Email"
+                            onChangeText={(zip) => { let user = this.state.user; user.zip = zip; this.setState({ user }) }}
+                            value={this.state.user.email}
+                            style={styles.textI}
+                            autoCapitalize="none"
+                            autoCompleteType='email'
+                            textContentType='emailAddress'
+                        />
+                        <TextInput
+                            placeholder="Age"
+                            onChangeText={(age) => { let user = this.state.user; user.age = age; this.setState({ user }) }}
+                            value={String(this.state.user.age)}
+                            style={styles.textI}
+                            autoCapitalize='none'
+                            keyboardType='number-pad'
+                        />
+                        <TextInput
+                            placeholder="Address"
+                            onChangeText={(add) => { let user = this.state.user; user.address = add; this.setState({ user }) }}
+                            value={this.state.user.address}
+                            style={styles.textI}
+                            multiline={true}
+                            autoCompleteType='street-address'
+                            textContentType='fullStreetAddress'
+                        />
                     </View>
                 </View>
                 <View style={{ flex: 1, flexDirection: "row", paddingLeft: 5, paddingRight: 5, paddingBottom: 5, borderBottomColor: "#495867", borderBottomWidth: StyleSheet.hairlineWidth, alignItems: 'stretch', justifyContent: 'center' }}>
@@ -229,7 +373,12 @@ export default class EditProfileScreen extends Component {
                         <Text style={styles.textT}>Bio</Text>
                     </View>
                     <View style={{ marginLeft: 5, marginRight: 5, width: right }}>
-                        <TextInput placeholder="Bio" style={[styles.textI, { borderBottomWidth: 0 }]} multiline={true} />
+                        <TextInput
+                            placeholder="Bio"
+                            style={[styles.textI, { borderBottomWidth: 0 }]}
+                            multiline={true}
+                            onChangeText={(bio) => { let user = this.state.user; user.bio = bio; this.setState({ user }) }}
+                        />
                     </View>
                 </View>
                 <View>

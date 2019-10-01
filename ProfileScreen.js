@@ -25,7 +25,7 @@ export default class ProfileScreen extends Component {
                 password: "",
                 address: "",
                 Token: "",
-                profileImage: { uri: "https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460_960_720.png" }
+                profileImage: "https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460_960_720.png"
             },
             jobsList: [
 
@@ -96,7 +96,9 @@ export default class ProfileScreen extends Component {
         try {
             let dataJ = await AsyncStorage.getItem(key)
             let data = JSON.parse(dataJ)
-            data.profileImage = { uri: "https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460_960_720.png" }
+            //data.profileImage = { uri: "https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460_960_720.png" }
+            console.log("image: " + data.profileImage)
+            data.zip = String(data.zip)
             this.setState({
                 user: data
             })
@@ -214,7 +216,7 @@ export default class ProfileScreen extends Component {
                 <View style={{ flex: 1, flexDirection: "row", padding: 10 }}>
                     <Image
                         style={{ width: width * 0.3, height: width * 0.3, borderRadius: (width * 0.3) / 2 }}
-                        source={this.state.user.profileImage} />
+                        source={{ uri: this.state.user.profileImage }} />
                     <View style={{ flex: 1, flexDirection: "column", padding: 10, justifyContent: 'center', height: width * 0.3 }}>
                         <Text>Username: {this.state.user.username}</Text>
                         <Text>First Name: {this.state.user.firstName}</Text>
