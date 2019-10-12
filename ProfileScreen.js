@@ -76,6 +76,7 @@ export default class ProfileScreen extends Component {
         navigation.setParams({ edit: () => navigation.navigate('Edit', { user: this.state.user }) })
         this.focusListener = navigation.addListener("didFocus", async () => {
             await this.load("currentUser")
+            
             //this.downloadPosts()
         })
     }
@@ -99,6 +100,10 @@ export default class ProfileScreen extends Component {
             //data.profileImage = { uri: "https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460_960_720.png" }
             console.log("image: " + data.profileImage)
             data.zip = String(data.zip)
+            if (data.age != null) {
+                data.age = String(data.age)
+            } 
+            
             this.setState({
                 user: data
             })

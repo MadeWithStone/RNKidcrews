@@ -22,6 +22,7 @@ export default class EditProfileScreen extends Component {
         this.userImage = this.userImage.bind(this)
         this.getUserData = this.getUserData.bind(this)
         this.save = this.save.bind(this)
+        this.saveUserData = this.saveUserData.bind(this)
     }
 
     static navigationOptions = ({ navigation }) => {
@@ -50,7 +51,7 @@ export default class EditProfileScreen extends Component {
 
 
     async componentDidMount() {
-        this.props.navigation.setParams({ Save: () => this.saveUserData })
+        this.props.navigation.setParams({ Save: this.saveUserData })
         let user = this.state.user
         user.linkedPeople = [{
             id: 0,
@@ -93,27 +94,34 @@ export default class EditProfileScreen extends Component {
 
         let server = Config.server + "/api/users/update"
         //let body = this.createFormData(this.state.userImage, {})
+        const user = this.state.user
+        delete user.token
+        delete user._id
+        delete user.password
+        delete user.salt
+        user.zip = parseInt(user.zip, 10)
+        user.age = parseInt(user.age, 10)
         const body = {
-            user: this.state.user
+            user: user
         }
 
 
         console.log(body)
-        console.log("fetching")
+        console.log("saving user data")
         fetch(server, {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
-                'Token': 'Token ' + this.state.user.token
+                'authorization': 'Token ' + this.state.user.Token
             },
             body: body
         })
             .then((response) => response.json())
-            .then(async (responseJSON) => {
+            /*.then(async (responseJSON) => {
                 console.log(responseJSON)
 
 
-            })
+            })*/
             .catch((error) => {
                 alert("error")
                 console.log("error: " + error + "; server: " + server + "; json: " + body)
@@ -352,7 +360,7 @@ export default class EditProfileScreen extends Component {
                         <TextInput
                             placeholder="Age"
                             onChangeText={(age) => { let user = this.state.user; user.age = age; this.setState({ user }) }}
-                            value={String(this.state.user.age)}
+                            value={this.state.user.age}
                             style={styles.textI}
                             autoCapitalize='none'
                             keyboardType='number-pad'

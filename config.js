@@ -1,7 +1,7 @@
 export default {
     buttonColor: "#fe5f55",
     buttonBorderRadius: 10,
-    server: "http://localhost:3000",
+    server: "http://192.168.87.168:3000",
     logo_horizonatal: require("./assets/logo_horizontal.png"),
     buttonStyle: {
         backgroundColor: '#FE5F55',
@@ -26,4 +26,4 @@ export default {
             fontSize: 25
         }
     }
-}
+    }
