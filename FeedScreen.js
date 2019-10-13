@@ -5,6 +5,7 @@ import { AsyncStorage } from '@react-native-community/async-storage'
 import Config from './config'
 import ProfileScreen from './ProfileScreen';
 import EditProfileScreen from './EditProfileScreen'
+import PostViewScreen from './PostingViewScreen'
 
 class FeedScreen extends Component {
 
@@ -73,34 +74,35 @@ class FeedScreen extends Component {
         let width = this.state.width
         let listings = []
         let l = this.state.listings
-        for (i in this.state.listings) {
+        l.map((post) => {
+            console.log('post')
             var cpr
-            if (l[i].cpr) {
+            if (post.cpr) {
                 cpr = 'CPR'
             } 
             listings.push(
-            <TouchableOpacity activeOpacity={0.7} key={l[i]._id}>
+            <TouchableOpacity activeOpacity={0.7} key={post._id} onPress={() => this.props.navigation.navigate('Post', {post: post})}>
                 <View style={{padding: 10, flex: 1, flexDirection: "row", alignItems: 'stretch', justifyContent: 'space-between', borderBottomColor: '#495867', borderBottomWidth: StyleSheet.hairlineWidth}}>
                     <Image 
-                        source={{uri: l[i].img}} 
+                        source={{uri: post.img}} 
                         style={{width: width*0.3, height: width*0.3, borderRadius: width*0.3*0.5, marginRight: 5}}
                     />
                     <View style={{flex: 2, flexDirection: "column", marginLeft: 5, marginRight: 5, alignSelf: 'stretch'}}>
-                        <Text style={{fontSize: 25, color: '#fe5f55'}}>{l[i].username}</Text>
-                        <Text style={{fontSize: 20, color: '#495867'}}>{l[i].name}</Text>
-                        <Text style={{fontSize: 15, color: '#495867'}}>{l[i].distance} mi</Text>
-                        <Text style={{fontSize: 15, color: '#495867'}}>{l[i].bio}</Text>
+                        <Text style={{fontSize: 25, color: '#fe5f55'}}>{post.username}</Text>
+                        <Text style={{fontSize: 20, color: '#495867'}}>{post.name}</Text>
+                        <Text style={{fontSize: 15, color: '#495867'}}>{post.distance} mi</Text>
+                        <Text style={{fontSize: 15, color: '#495867'}}>{post.bio}</Text>
                         
                     </View>
                     <View style={{flex: 0.85, alignItems: 'center', marginLeft: 5}}>
-                        <Text style={{fontSize: 60, color: '#fe5f55'}}>${l[i].price}</Text> 
+                        <Text style={{fontSize: 60, color: '#fe5f55'}}>${post.price}</Text> 
                         <Text style={{fontSize: 25, color: '#fe5f55'}}>per hour</Text>
                         <View style={{height: 10}}></View>
                         <Text style={{fontSize: 25, color: '#fe5f55'}}>{cpr}</Text>
                     </View>
                 </View>
             </TouchableOpacity>);
-        }
+        })
         return (
             <ScrollView>
                 {listings}
@@ -111,7 +113,10 @@ class FeedScreen extends Component {
 }
 
 
-const feed = createStackNavigator({ FeedScreen }, { defaultNavigationOptions: Config.navBarStyles })
+const feed = createStackNavigator({
+     Feed: FeedScreen,
+     Post: PostViewScreen
+}, { defaultNavigationOptions: Config.navBarStyles })
 const profile = createStackNavigator({
     Profile: ProfileScreen,
     Edit: EditProfileScreen
