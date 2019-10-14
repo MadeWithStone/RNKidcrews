@@ -25,7 +25,8 @@ class FeedScreen extends Component {
                 distance: 0.5,
                 bio: "I have been babysitting for 4 years and have a number of returning clients. I am very good with all ages of children from 3 - 10.",
                 cpr: true,
-                price: 15
+                price: 15,
+                zip: 20016,
             },
             {
                 _id: 1,
@@ -35,7 +36,8 @@ class FeedScreen extends Component {
                 distance: 0.5,
                 bio: "I have been babysitting for 4 years and have a number of returning clients. I am very good with all ages of children from 3 - 10.",
                 cpr: false,
-                price: 15
+                price: 15,
+                zip: 20008
             },
             {
                 _id: 2,
@@ -45,7 +47,8 @@ class FeedScreen extends Component {
                 distance: 0.5,
                 bio: "I have been babysitting for 4 years and have a number of returning clients. I am very good with all ages of children from 3 - 10.",
                 cpr: true,
-                price: 15
+                price: 15,
+                zip: 20015
             },
             {
                 _id: 3,
@@ -55,7 +58,8 @@ class FeedScreen extends Component {
                 distance: 0.5,
                 bio: "I have been babysitting for 4 years and have a number of returning clients. I am very good with all ages of children from 3 - 10.",
                 cpr: true,
-                price: 15
+                price: 15,
+                zip: 20002
             },
             {
                 _id: 4,
@@ -65,7 +69,8 @@ class FeedScreen extends Component {
                 distance: 0.5,
                 bio: "I have been babysitting for 4 years and have a number of returning clients. I am very good with all ages of children from 3 - 10.",
                 cpr: true,
-                price: 15
+                price: 15,
+                zip: 20019
             }]
         }
     }
@@ -97,8 +102,12 @@ class FeedScreen extends Component {
                     <View style={{flex: 0.85, alignItems: 'center', marginLeft: 5}}>
                         <Text style={{fontSize: 60, color: '#fe5f55'}}>${post.price}</Text> 
                         <Text style={{fontSize: 25, color: '#fe5f55'}}>per hour</Text>
-                        <View style={{height: 10}}></View>
+                        <View style={{height: 7}}></View>
                         <Text style={{fontSize: 25, color: '#fe5f55'}}>{cpr}</Text>
+                        <View style={{flexDirection: 'row'}}>
+                            <Text style={{fontSize: 25, color: '#fe5f55'}}>{post.rating}</Text>
+                            <Image source={require()} />
+                        </View>
                     </View>
                 </View>
             </TouchableOpacity>);
