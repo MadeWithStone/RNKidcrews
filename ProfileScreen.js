@@ -1,5 +1,5 @@
 import React, { Component } from 'react'
-import { View, Text, TextInput, StyleSheet, ScrollView, Image, Dimensions, TouchableWithoutFeedback, TouchableOpacity } from 'react-native'
+import { Alert, View, Text, TextInput, StyleSheet, ScrollView, Image, Dimensions, TouchableWithoutFeedback, TouchableOpacity } from 'react-native'
 import { Button } from 'react-native-elements'
 import { createStackNavigator, createAppContainer, createBottomTabNavigator } from "react-navigation";
 import AsyncStorage from '@react-native-community/async-storage'
@@ -72,6 +72,14 @@ export default class ProfileScreen extends Component {
     }
 
     async componentDidMount() {
+        /*Alert.alert(
+            "New Hire Request",
+            "Andy has requested to hire you",
+            [
+                {text: 'Accept'},
+                {text: 'Decline'}
+            ]
+        )*/
         const { navigation } = this.props
         navigation.setParams({ edit: () => navigation.navigate('Edit', { user: this.state.user }) })
         this.focusListener = navigation.addListener("didFocus", async () => {

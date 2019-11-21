@@ -162,7 +162,7 @@ export default class EditProfileScreen extends Component {
                 // You can also display the image using data:
                 // const source = { uri: 'data:image/jpeg;base64,' + response.data };
                 var image = this.state.user
-                image.profileImage = source
+                image.profileImage = response.uri
 
                 this.setState({
                     user: image,
@@ -182,7 +182,7 @@ export default class EditProfileScreen extends Component {
 
                 body.append(
                     'file', {
-                    uri: this.state.user.profileImage.uri,
+                    uri: this.state.user.profileImage,
                     type: "image/" + response.fileName,
                     name: name,
                 })

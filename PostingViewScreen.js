@@ -1,8 +1,12 @@
 import React, { Component } from 'react'
-import { View, Text, Button, TextInput, StyleSheet, ScrollView, Dimensions, Image, TouchableOpacity } from 'react-native'
+import { Alert, View, Text, TextInput, StyleSheet, ScrollView, Dimensions, Image, TouchableOpacity } from 'react-native'
 import { createStackNavigator, createAppContainer, createBottomTabNavigator } from "react-navigation";
 import { AsyncStorage } from '@react-native-community/async-storage'
 import Config from './config'
+import { Button } from 'react-native-elements'
+import { FontAwesomeIcon } from '@fortawesome/react-native-fontawesome'
+
+import { faStar, faIdCard, faUserCircle} from '@fortawesome/free-solid-svg-icons'
 
 export default class PostingViewScreen extends Component {
 
@@ -24,6 +28,13 @@ export default class PostingViewScreen extends Component {
         this.setState({
             post: this.props.navigation.getParam('post', {})
         })
+    }
+
+    hire() {
+        Alert.alert(
+            "Hire Requested",
+            "your hiring request has been sent"
+        )
     }
 
     render() {
@@ -72,22 +83,34 @@ export default class PostingViewScreen extends Component {
         }
         
         return(
-            <View style={{ flex: 1, flexDirection: "row", padding: 10 }}>
-                <Image
-                    style={{ width: width * 0.3, height: width * 0.3, borderRadius: (width * 0.3) / 2 }}
-                    source={{ uri: this.state.post.img }} />
-                <View style={{ flex: 1, flexDirection: "column", padding: 10, justifyContent: 'center', height: width * 0.3 }}>
-                    <Text>Username: {this.state.post.username}</Text>
-                    <Text>First Name: {this.state.post.name}</Text>
-                    <Text>Zipcode: {this.state.post.zip}</Text>
+            <ScrollView>
+                <View style={{ flex: 1, flexDirection: "row", padding: 10 }}>
+                    <Image
+                        style={{ width: width * 0.3, height: width * 0.3, borderRadius: (width * 0.3) / 2 }}
+                        source={{ uri: this.state.post.img }} />
+                    <View style={{ flex: 1, flexDirection: "column", padding: 10, justifyContent: 'center', height: width * 0.3 }}>
+                        <Text>Username: {this.state.post.username}</Text>
+                        <Text>First Name: {this.state.post.name}</Text>
+                        <Text>Zipcode: {this.state.post.zip}</Text>
+                        <Text>Distance: {this.state.post.distance} mi</Text>
+                        <View style={{flexDirection: 'row', justifyContent: 'center'}}>
+                            <FontAwesomeIcon style={{color: '#fe5f55', marginRight: 3 }} size={25} icon={faStar} />
+                            <Text style={{fontSize: 25, color: '#fe5f55'}}>{post.rating}</Text>
+                        </View>
+                    </View>
+                    <View style={{flex: 0.85, alignItems: 'center', marginLeft: 5}}>
+                        <Text style={{fontSize: 60, color: '#fe5f55'}}>${post.price}</Text> 
+                        <Text style={{fontSize: 25, color: '#fe5f55'}}>per hour</Text>
+                        <View style={{height: 10}}></View>
+                        <Text style={{fontSize: 25, color: '#fe5f55'}}>{cpr}</Text>
+                    </View>
                 </View>
-                <View style={{flex: 0.85, alignItems: 'center', marginLeft: 5}}>
-                    <Text style={{fontSize: 60, color: '#fe5f55'}}>${post.price}</Text> 
-                    <Text style={{fontSize: 25, color: '#fe5f55'}}>per hour</Text>
-                    <View style={{height: 10}}></View>
-                    <Text style={{fontSize: 25, color: '#fe5f55'}}>{cpr}</Text>
+                <View style={{margin: 10}}>
+                    <Text style={{alignSelf: "center", color: "#fe5f55", fontSize: 20}}>Available</Text>
+                    <View style={{height: 10}} />
+                    <Button onPress={this.hire} title={"Hire"} buttonStyle={Config.buttonStyle} />
                 </View>
-            </View>
+            </ScrollView>
         )
     }
 }
