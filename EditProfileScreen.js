@@ -1,11 +1,14 @@
 import React, { Component } from 'react'
-import { View, Text, TextInput, StyleSheet, ScrollView, Image, Dimensions, TouchableWithoutFeedback, TouchableOpacity } from 'react-native'
+import { View, Text, TextInput, StyleSheet, ScrollView, Image, Dimensions, TouchableWithoutFeedback, TouchableOpacity} from 'react-native'
+import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view'
 import { Button } from 'react-native-elements'
 import { createStackNavigator, createAppContainer, createBottomTabNavigator } from "react-navigation";
 import AsyncStorage from '@react-native-community/async-storage'
 import Config from './config'
 import ImagePicker from 'react-native-image-picker'
 import RNHeicConverter from 'react-native-heic-converter'
+import Loader from './loader'
+import RNGooglePlaces from 'react-native-google-places';
 //import AWS from 'aws-sdk'
 
 export default class EditProfileScreen extends Component {
@@ -16,13 +19,16 @@ export default class EditProfileScreen extends Component {
             width: Math.round(Dimensions.get('window').width),
             linkedPeople: [],
             profileImage: [],
-            token: ''
+            token: '',
+            loading: false,
+            loadingText: "",
         }
         this.linkedPeopleEle = this.linkedPeopleEle.bind(this)
         this.userImage = this.userImage.bind(this)
         this.getUserData = this.getUserData.bind(this)
         this.save = this.save.bind(this)
         this.saveUserData = this.saveUserData.bind(this)
+        this.openSearchModal = this.openSearchModal.bind(this)
     }
 
     static navigationOptions = ({ navigation }) => {
@@ -72,6 +78,21 @@ export default class EditProfileScreen extends Component {
         //this.getUserData()
     }
 
+    openSearchModal() {
+        RNGooglePlaces.openAutocompleteModal()
+        .then((place) => {
+            console.log(place);
+            oUser = this.state.user
+            oUser.address = place.address
+            this.setState({
+                user: oUser
+            })
+            // place represents user's selection from the
+            // suggestions and it is a simplified Google Place object.
+        })
+        .catch(error => console.log(error.message));  // error is a Javascript Error object
+      }
+
     async linkedPeopleEle() {
         let width = this.state.width
         let list = []
@@ -91,19 +112,42 @@ export default class EditProfileScreen extends Component {
     }
 
     async saveUserData() {
+        this.setState({
+            loading: true,
+            loadingText: "Uploading New Data"
+        })
 
         let server = Config.server + "/api/users/update"
         //let body = this.createFormData(this.state.userImage, {})
-        const user = this.state.user
-        delete user.token
-        delete user._id
-        delete user.password
-        delete user.salt
-        user.zip = parseInt(user.zip, 10)
-        user.age = parseInt(user.age, 10)
-        const body = {
-            user: user
+        let oUser = this.state.user
+        console.log("setting up")
+        const user = {
+            _id: oUser._id,
+            firstName: oUser.firstName,
+            lastName: oUser.lastName,
+            zip: parseInt(oUser.zip, 10),
+            email: oUser.email,
         }
+        console.log("bio")
+        if (oUser.bio != null) {
+            user['bio'] = oUser.bio
+        }
+        console.log("age")
+        if (oUser.age != null) {
+            user['age'] = parseInt(oUser.age, 10)
+        }
+        console.log("address")
+        if (oUser.address != null) {
+            user['address'] = oUser.address
+        }
+        console.log("username")
+        if (oUser.username != null) {
+            console.log("in username")
+            user['username'] = oUser.username
+        }
+        const body = JSON.stringify({
+            user: user
+        })
 
 
         console.log(body)
@@ -112,16 +156,22 @@ export default class EditProfileScreen extends Component {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
-                'authorization': 'Token ' + this.state.user.Token
+                'Accept': 'application/json',
+                //'authorization': 'Token ' + this.state.user.token
             },
             body: body
         })
-            .then((response) => response.json())
-            /*.then(async (responseJSON) => {
-                console.log(responseJSON)
+            .then((response) => response.status)
+            .then(async (responseStatus) => {
+                if (responseStatus == 200) {
+                    this.getUserData
+                }
+                this.setState({
+                    loading: false
+                })
 
 
-            })*/
+            })
             .catch((error) => {
                 alert("error")
                 console.log("error: " + error + "; server: " + server + "; json: " + body)
@@ -235,6 +285,10 @@ export default class EditProfileScreen extends Component {
 
     async getUserData() {
         if (this.state.user._id != null) {
+            this.setState({
+                loading: true,
+                loadingText: "Saving Data"
+            })
 
             let server = Config.server + "/api/users/current"
             let body = JSON.stringify({
@@ -254,9 +308,14 @@ export default class EditProfileScreen extends Component {
                 .then(async (responseJson) => {
                     var user = responseJson.user
                     user.password = this.state.user.password
-                    this.save(user, 'currentUser')
+                    await this.save(user, 'currentUser')
                     console.log('user: ' + JSON.stringify(user))
                     //await this.save(user, 'currentUser')
+                    this.setState({
+                        loading: false
+                    })
+
+                    this.props.navigation.goBack()
 
                 })
                 .catch((error) => {
@@ -282,6 +341,7 @@ export default class EditProfileScreen extends Component {
                 borderBottomWidth: StyleSheet.hairlineWidth,
                 paddingTop: 10,
                 paddingBottom: 10,
+                color: '#495867'
             },
             textT: {
                 paddingTop: 10,
@@ -292,9 +352,40 @@ export default class EditProfileScreen extends Component {
         let width = this.state.width
         let right = (width - 120)
         console.log('image: ' + this.state.user.profileImage)
-        return (
+        var addressView;
+        if (this.state.user.address != null) {
+            addressView = (<Text style={styles.textI}
 
-            <ScrollView>
+                /*placeholder="Address"
+                onChangeText={(add) => { let user = this.state.user; user.address = add; this.setState({ user }) }}
+                value={this.state.user.address}
+                style={styles.textI}
+                multiline={true}
+                autoCompleteType='street-address'
+                textContentType='fullStreetAddress'*/
+            >{this.state.user.address}</Text>)
+        } else {
+            addressView = (<Text style={[styles.textI, {color: "#C7C7CD"}]}
+
+                /*placeholder="Address"
+                onChangeText={(add) => { let user = this.state.user; user.address = add; this.setState({ user }) }}
+                value={this.state.user.address}
+                style={styles.textI}
+                multiline={true}
+                autoCompleteType='street-address'
+                textContentType='fullStreetAddress'*/
+            >Address</Text>)
+        }
+        return (
+            <View>
+            <Loader loading={this.state.loading} text={this.state.loadingText} />
+            
+            <KeyboardAwareScrollView
+                style={{ backgroundColor: '#fffffff' }}
+                resetScrollToCoords={{ x: 0, y: 0 }}
+                contentContainerStyle={styles.container}
+                scrollEnabled={true}
+            >
                 <View style={{ flex: 1, alignItems: 'center', padding: 10, borderBottomColor: "#495867", borderBottomWidth: StyleSheet.hairlineWidth }}>
                     <Image source={{ uri: this.state.user.profileImage }} style={{ width: width * 0.3, height: width * 0.3, borderRadius: (width * 0.3) / 2, marginBottom: 10 }} />
                     <TouchableOpacity onPress={this.userImage} style={{}}><Text style={{ color: "#fe5f55" }}>Change Profile Photo</Text></TouchableOpacity>
@@ -339,7 +430,7 @@ export default class EditProfileScreen extends Component {
                         <TextInput
                             placeholder="Zipcode"
                             onChangeText={(zip) => { let user = this.state.user; user.zip = zip; this.setState({ user }) }}
-                            value={this.state.user.zip}
+                            value={String(this.state.user.zip)}
                             style={styles.textI}
                             placeholder={"Zipcode"}
                             autoCompleteType="postal-code"
@@ -350,7 +441,7 @@ export default class EditProfileScreen extends Component {
 
                         <TextInput
                             placeholder="Email"
-                            onChangeText={(zip) => { let user = this.state.user; user.zip = zip; this.setState({ user }) }}
+                            onChangeText={(email) => { let user = this.state.user; user.email = email; this.setState({ user }) }}
                             value={this.state.user.email}
                             style={styles.textI}
                             autoCapitalize="none"
@@ -360,20 +451,17 @@ export default class EditProfileScreen extends Component {
                         <TextInput
                             placeholder="Age"
                             onChangeText={(age) => { let user = this.state.user; user.age = age; this.setState({ user }) }}
-                            value={this.state.user.age}
+                            value={String(this.state.user.age)}
                             style={styles.textI}
                             autoCapitalize='none'
                             keyboardType='number-pad'
                         />
-                        <TextInput
-                            placeholder="Address"
-                            onChangeText={(add) => { let user = this.state.user; user.address = add; this.setState({ user }) }}
-                            value={this.state.user.address}
-                            style={styles.textI}
-                            multiline={true}
-                            autoCompleteType='street-address'
-                            textContentType='fullStreetAddress'
-                        />
+                        <TouchableOpacity onPress={() => this.openSearchModal()}>
+                            {
+                                addressView
+                            }
+                        
+                        </TouchableOpacity>
                     </View>
                 </View>
                 <View style={{ flex: 1, flexDirection: "row", paddingLeft: 5, paddingRight: 5, paddingBottom: 5, borderBottomColor: "#495867", borderBottomWidth: StyleSheet.hairlineWidth, alignItems: 'stretch', justifyContent: 'center' }}>
@@ -391,7 +479,8 @@ export default class EditProfileScreen extends Component {
                 </View>
                 <View>
                 </View>
-            </ScrollView>
+            </KeyboardAwareScrollView>
+            </View>
         )
     }
 }

@@ -1,16 +1,20 @@
 import React, { Component } from 'react'
-import { Alert, View, Text, TextInput, StyleSheet, ScrollView, Dimensions, Image, TouchableOpacity } from 'react-native'
+import { Alert, View, Text, TextInput, StyleSheet, ScrollView, Dimensions, Image, TouchableOpacity, Modal, ActivityIndicator, Picker } from 'react-native'
 import { createStackNavigator, createAppContainer, createBottomTabNavigator } from "react-navigation";
-import { AsyncStorage } from '@react-native-community/async-storage'
+import AsyncStorage from '@react-native-community/async-storage'
 import Config from './config'
 import ProfileScreen from './ProfileScreen';
 import EditProfileScreen from './EditProfileScreen'
 import PostViewScreen from './PostingViewScreen'
 import CreatePostScreen from './CreatePostScreen'
+import GooglePlacesInput from './GoogleAddress'
 import { Button } from 'react-native-elements'
 import { FontAwesomeIcon } from '@fortawesome/react-native-fontawesome'
+import {Calendar, CalendarList, Agenda} from 'react-native-calendars';
 
 import { faStar, faIdCard, faUserCircle} from '@fortawesome/free-solid-svg-icons'
+import Filter from './FilterModel'
+import { ConsoleLogger } from '@aws-amplify/core';
 
 class FeedScreen extends Component {
 
@@ -18,17 +22,9 @@ class FeedScreen extends Component {
         return {
             title: 'Listings',
             headerRight: (
-                <Button title="Filter" onPress={() => Alert.alert(
-                    "Filters",
-                    "Apply filters to refine the listings",
-                    [
-                        {text: 'Price'},
-                        {text: 'Rating'},
-                        {text: 'Distance'},
-                        {text: 'Job'},
-                        {text: "Cancel"}
-                    ]
-                )}
+                <Button title="Filter" onPress={
+                    navigation.getParam('filter')
+                }
                 buttonStyle={{ backgroundColor: '#ffffff' }} 
                 titleStyle={{ color: '#fe5f55' }}/>
             ),
@@ -44,85 +40,205 @@ class FeedScreen extends Component {
         super(props)
         this.state = {
             width: Math.round(Dimensions.get('window').width),
-            listings: [{
-                _id: 0,
-                img: "https://dhuh3lqp0wlh3.cloudfront.net/7c/95ceb08b9511e7a0adfd737ef850d9/sitter-miranda-flerx-lexington-f4014404.jpg",
-                username: "melissa999",
-                name: "Melissa",
-                distance: 0.5,
-                bio: "I have been babysitting for 4 years and have a number of returning clients. I am very good with all ages of children from 3 - 10.",
-                cpr: true,
-                price: 15,
-                zip: 20016,
-                rating: 4.5
-            },
-            {
-                _id: 1,
-                img: "https://encrypted-tbn0.gstatic.com/images?q=tbn%3AANd9GcR9ZigRPiV4tEa7qIaEIh-hsABx_0quCy1Bm34Mb31ldiPKDrmY",
-                username: "danny123",
-                name: "Danny",
-                distance: 0.6,
-                bio: "Been mowing 4 years.",
-                cpr: false,
-                price: 8,
-                zip: 20009,
-                rating: 5.0
-            },
-            {
-                _id: 2,
-                img: "https://www.wikihow.com/images/f/ff/Draw-a-Cute-Cartoon-Person-Step-14.jpg",
-                username: "andy555",
-                name: "Andy",
-                distance: 0.7,
-                bio: "Been babysitting 4 years.",
-                cpr: true,
-                price: 13,
-                zip: 20015,
-                rating: 4.8
-            },
-            {
-                _id: 3,
-                img: "https://encrypted-tbn0.gstatic.com/images?q=tbn%3AANd9GcRERzRycAuBSpObFve8pmw00F-86_NwkDHtGL02g7pzUobeTQxV",
-                username: "bossyMcFly",
-                name: "Bob",
-                distance: 0.3,
-                bio: "I own my own mower",
-                cpr: true,
-                price: 10,
-                zip: 20002,
-                rating: 4.9
-            },
-            {
-                _id: 4,
-                img: "http://clipartshare.com/wp-content/uploads/2019/01/Clown-Big-Eyes-Cartoon-Person-232x300.png",
-                username: "marty543",
-                name: "Marty",
-                distance: 0.1,
-                bio: "I have a bright red mower.",
-                cpr: true,
-                price: 7,
-                zip: 20019,
-                rating: 1.0
-            }]
+            user: {},
+            listings: [],
+            filtering: false,
+            loading: false,
+            text: "",
+            job: "BS",
+            marked: {},
+            multi: 1,
+            jobSort: null,
+            area: null,
+            filters: {}
         }
+        this.downloadPosts = this.downloadPosts.bind(this)
+        this.startFiltering = this.startFiltering.bind(this)
+        this.changeSort = this.changeSort.bind(this)
+        this.loadFilters = this.loadFilters.bind(this)
+    }
+
+    async load(key) {
+        try {
+            let dataJ = await AsyncStorage.getItem(key)
+            let data = JSON.parse(dataJ)
+            //data.profileImage = { uri: "https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460_960_720.png" }
+            console.log("image: " + data.profileImage)
+            
+            
+            this.setState({
+                user: data
+            })
+            console.log(data)
+            return "true"
+        } catch (error) {
+            console.log("load error: " + error)
+            return "false"
+        }
+    }
+
+    changeSort() {
+        
+        if (this.state.job == "M") {
+            
+                return (
+                    <View style={{flex: 1, flexDirection: 'row', alignItems: "center"}}>
+                        <Text style={{flex: 0.2}}>Hours: </Text> 
+                        <Picker 
+                            selectedValue={this.state.multi}
+                            style={{flex: 0.7}}
+                            onValueChange={(itemValue, itemIndex) => {
+                                this.setState({multi: itemValue})
+                            }   
+                        }>
+                        <Picker.Item label="1" value="1" />
+                        <Picker.Item label="2" value="2" />
+                        <Picker.Item label="3" value="3" />
+                        <Picker.Item label="4" value="4" />
+                        <Picker.Item label="5" value="5" />
+                        <Picker.Item label="6" value="6" />
+                        <Picker.Item label="7" value="7" />
+                        <Picker.Item label="8" value="8" />
+                        </ Picker>
+                    </View>
+                )
+
+            
+        } else if (this.state.job == "BS") {
+            
+                return  (
+                    <View style={{flex: 1, flexDirection: 'row'}}>
+                        <Text style={{paddingRight: 3}}>Area: (in square feet) </Text> 
+                        <TextInput 
+                            style={{flex: 0.8}}
+                            placeholder="price"
+                            multiline={false}
+                            onChangeText={(multi) => (this.setState({multi}))}
+
+                            autoCompleteType="cc-number"
+                            textContentType="telephoneNumber"
+                            autoCapitalize='none'
+                            keyboardType={'numeric'}
+                        />
+                    </View>
+                )
+            
+            
+            
+        }
+    }
+
+    async save(key) {
+        let data = {}
+        data['job'] = this.state.job
+        data['marked'] = this.state.marked
+        data['hours'] = this.state.hours
+        try {
+            await AsyncStorage.setItem(key, JSON.stringify(data))
+        } catch (error) {
+            console.log("save error: " + error)
+        }
+    }
+
+    startFiltering() {
+        this.setState({filtering: true})
+        
+    }
+
+    async componentDidMount() {
+        this.changeSort()
+        this.props.navigation.setParams({ filter: this.startFiltering })
+        await this.load("currentUser")
+
+        this.downloadPosts()
+    }
+
+    async loadFilters() {
+        try {
+            let dataJ = await AsyncStorage.getItem("filters")
+            let data = JSON.parse(dataJ)
+            var marked = []
+            var dates = false
+            
+            if (data.marked != null) {
+                marked = data.marked
+                dates = true
+            }
+            console.log("sort by dates: "+dates)
+            this.setState({
+                job: data.job,
+                hours: data.hours,
+                marked: data.marked,
+                filters: {
+                    data: {
+                        dates: dates,
+                        dSent: Object.keys(marked),
+                        job: data.job
+                    }
+                }
+            })
+            return "true"
+        } catch (error) {
+            console.log("load error: " + error)
+            return "false"
+        }
+    }
+
+    async downloadPosts() {    
+        console.log("setting up server")
+        await this.loadFilters()
+
+        let server = Config.server + "/jobs/get"
+        let body = JSON.stringify(
+            this.state.filters
+
+        )
+        console.log("fetching: "+server)
+        try {
+            let resp = await fetch(server, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'authorization': 'Token ' + this.state.user.token
+                },
+                body: body
+            })
+            let data = await resp.json()
+            this.setState({
+                listings: data
+            })
+            console.log(JSON.stringify(this.state.listings))
+
+        } catch (err) {
+            alert("error")
+            console.log("error: " + err + "; server: " + server + "; json: " + body)
+        }
+                
     }
 
     render() {
         let width = this.state.width
         let listings = []
         let l = this.state.listings
+        let filtering = JSON.parse(JSON.stringify(this.state.filtering))
+
+        
+        
+        console.log("filtering: "+filtering)
         l.map((post) => {
             console.log('post')
             var cpr
             if (post.cpr) {
                 cpr = 'CPR'
-            } 
+            }
+            let p = parseInt(post.jobSpecs.price, 10)
+            const price = p * parseInt(this.state.multi, 10)
             listings.push(
             <TouchableOpacity activeOpacity={0.7} key={post._id} onPress={() => this.props.navigation.navigate('Post', {post: post})}>
                 <View style={{padding: 10, flex: 1, flexDirection: "row", alignItems: 'stretch', justifyContent: 'space-between', borderBottomColor: '#495867', borderBottomWidth: StyleSheet.hairlineWidth}}>
                     <View style={{width: width*0.2, alignItems: "center"}}>
                         <Image 
-                            source={{uri: post.img}} 
+                            source={{uri: post.user.profileImage}} 
                             style={{width: width*0.2, height: width*0.2, borderRadius: width*0.3*0.5, marginRight: 5}}
                         />
                         <View style={{flexDirection: 'row', justifyContent: 'center'}}>
@@ -131,15 +247,15 @@ class FeedScreen extends Component {
                         </View>
                     </View>
                     <View style={{flex: 1.5, flexDirection: "column", marginLeft: 5, marginRight: 5, alignSelf: 'stretch'}}>
-                        <Text style={{fontSize: 25, color: '#fe5f55'}}>{post.username}</Text>
-                        <Text style={{fontSize: 20, color: '#495867'}}>{post.name}</Text>
-                        <Text style={{fontSize: 15, color: '#495867'}}>{post.distance} mi</Text>
-                        <Text style={{fontSize: 15, color: '#495867'}}>{post.bio}</Text>
+                        <Text style={{fontSize: 22, color: '#fe5f55'}}>{post.jobSpecs.title}</Text>
+                        <Text style={{fontSize: 20, color: '#fe5f55'}}>{post.user.username}</Text>
+                        <Text style={{fontSize: 17, color: '#495867'}}>{post.user.firstName}</Text>
+                        <Text style={{fontSize: 12, color: '#495867'}}>{post.distance} mi</Text>
+                        <Text style={{fontSize: 12, color: '#495867'}}>{post.jobSpecs.bio}</Text>
                         
                     </View>
                     <View style={{flex: 0.85, alignItems: 'center', marginLeft: 5}}>
-                        <Text style={{fontSize: 50, color: '#fe5f55'}}>${post.price}</Text> 
-                        <Text style={{fontSize: 25, color: '#fe5f55'}}>per hour</Text>
+                        <Text adjustsFontSizeToFit={true} numberOfLines={1} style={{fontSize: 50, color: '#fe5f55'}}>${price}</Text> 
                         <View style={{height: 7}}></View>
                         <Text style={{fontSize: 25, color: '#fe5f55'}}>{cpr}</Text>
                         
@@ -147,15 +263,136 @@ class FeedScreen extends Component {
                 </View>
             </TouchableOpacity>);
         })
+        let date = new Date()
+        let markedDates = JSON.parse(JSON.stringify(this.state.marked))
+        
+        let sort = <this.changeSort />
         return (
+            <View>
+            <Modal
+            transparent={true}
+            animationType={'none'}
+            visible={filtering}>
+                
+                <View style={styles.modalBackground}>
+                
+                    <View style={styles.activityIndicatorWrapper}>
+                    <ScrollView showsVerticalScrollIndicator={false}>
+                    <ActivityIndicator
+                        style={styles.acrivityIndicator}
+                        animating={this.state.loading} />
+                    <Picker 
+                        selectedValue={this.state.job}
+                        style={{width: 100+'%', height: 200}}
+                        onValueChange={(itemValue, itemIndex) => {
+                            this.setState({job: ""})
+                            if (itemValue == "BS") {
+                                this.setState({job: "BS"})
+                            } else if (itemValue == "M") {
+                                this.setState({job: "M"})
+                            }
+                            console.log("job: "+this.state.job)
+                        }   
+                    }>
+                    <Picker.Item label="Babysitting" value="M" />
+                    <Picker.Item label="Mowing" value="BS" />
+                    </ Picker>
+                    <View>
+                        
+                        <Calendar
+                            minDate={date}
+                            onDayPress={(day) => {
+                                let d = markedDates
+                                if (d[day.dateString] == null) {
+                                    d[day.dateString] = {customStyles: {
+                                        container: {
+                                            backgroundColor: '#fe5f55'
+                                        }, 
+                                        text: {
+                                            color: 'white'
+                                        }
+                                    }}
+                                } else {
+                                    delete d[day.dateString]
+                                }
+                                
+                                this.setState({
+                                    marked: d
+                                })
+                                console.log("dates: "+JSON.stringify(markedDates))
+                            }}
+
+                            theme={{
+                                backgroundColor: '#ffffff',
+                                calendarBackground: '#ffffff',
+                                todayTextColor: '#fe5f55',
+                                arrowColor: '#fe5f55'
+                            }}
+                            //showWeekNumbers={true}
+                            markedDates={markedDates}
+                            markingType={'custom'}
+                        />
+                        {() => {
+                            
+                        }}
+                        
+                    </View>
+                    <View>
+                        {sort}
+                    </View>
+                    <Button titleStyle={{color: "#fe5f55"}} buttonStyle={{backgroundColor: "#fff"}} title="Save" onPress={async () => {
+                        await this.save("filters")
+                        this.downloadPosts()
+                        this.setState({filtering: false})
+                    }}/>
+                    <Button titleStyle={{color: "#2089dc"}} buttonStyle={{backgroundColor: "#fff"}} title="Cancel" onPress={() => this.setState({filtering: false})}/>
+                    </ScrollView>
+                    </View>
+                    
+                    
+                </View>
+                
+            </Modal>
             <ScrollView>
                 {listings}
                 
             </ScrollView>
+            </View>
         )
     }
 }
-
+const styles = StyleSheet.create({
+    modalBackground: {
+        flex: 1,
+        alignItems: 'center',
+        flexDirection: 'column',
+        justifyContent: 'space-around',
+        backgroundColor: '#00000040',
+        paddingBottom: 100,
+        paddingTop: 100
+    },
+    activityIndicatorWrapper: {
+        backgroundColor: '#FFFFFF',
+        //height: 900,
+        width: 300,
+        borderRadius: 10,
+        display: 'flex',
+        alignItems: 'center',
+        justifyContent: 'space-around',
+        paddingLeft: 20,
+        paddingRight: 20,
+    },
+    acrivityIndicator: {
+        height: 50,
+        width: 50
+    },
+    loadingText: {
+        color: "#fe5f55",
+        padding: 10,
+        fontSize: 18
+    }
+    
+});
 
 const feed = createStackNavigator({
      Listings: FeedScreen,
@@ -164,7 +401,8 @@ const feed = createStackNavigator({
 }, { defaultNavigationOptions: Config.navBarStyles })
 const profile = createStackNavigator({
     Profile: ProfileScreen,
-    Edit: EditProfileScreen
+    Edit: EditProfileScreen,
+    Address: GooglePlacesInput,
 }, { defaultNavigationOptions: Config.navBarStyles })
 
 const TabNavigator = createBottomTabNavigator(

@@ -11,6 +11,13 @@ PODS:
     - DoubleConversion
     - glog
   - glog (0.3.5)
+  - GoogleMaps (3.1.0):
+    - GoogleMaps/Maps (= 3.1.0)
+  - GoogleMaps/Base (3.1.0)
+  - GoogleMaps/Maps (3.1.0):
+    - GoogleMaps/Base
+  - GooglePlaces (3.1.0):
+    - GoogleMaps/Base (= 3.1.0)
   - React (0.60.4):
     - React-Core (= 0.60.4)
     - React-DevSupport (= 0.60.4)
@@ -57,6 +64,10 @@ PODS:
     - React-cxxreact (= 0.60.4)
     - React-jsi (= 0.60.4)
   - React-jsinspector (0.60.4)
+  - react-native-google-places (3.1.2):
+    - GoogleMaps (~> 3.1.0)
+    - GooglePlaces (~> 3.1.0)
+    - React
   - react-native-heic-converter (1.3.0):
     - React
   - react-native-image-picker (1.1.0):
@@ -85,11 +96,11 @@ PODS:
   - React-RCTWebSocket (0.60.4):
     - React-Core (= 0.60.4)
     - React-fishhook (= 0.60.4)
-  - RNCAsyncStorage (1.6.1):
+  - RNCAsyncStorage (1.6.3):
     - React
-  - RNGestureHandler (1.3.0):
+  - RNGestureHandler (1.5.2):
     - React
-  - RNSVG (9.12.0):
+  - RNSVG (9.13.3):
     - React
   - RNVectorIcons (6.6.0):
     - React
@@ -107,6 +118,7 @@ DEPENDENCIES:
   - React-jsi (from `../node_modules/react-native/ReactCommon/jsi`)
   - React-jsiexecutor (from `../node_modules/react-native/ReactCommon/jsiexecutor`)
   - React-jsinspector (from `../node_modules/react-native/ReactCommon/jsinspector`)
+  - react-native-google-places (from `../node_modules/react-native-google-places`)
   - react-native-heic-converter (from `../node_modules/react-native-heic-converter`)
   - react-native-image-picker (from `../node_modules/react-native-image-picker`)
   - React-RCTActionSheet (from `../node_modules/react-native/Libraries/ActionSheetIOS`)
@@ -128,6 +140,8 @@ DEPENDENCIES:
 SPEC REPOS:
   trunk:
     - boost-for-react-native
+    - GoogleMaps
+    - GooglePlaces
 
 EXTERNAL SOURCES:
   DoubleConversion:
@@ -152,6 +166,8 @@ EXTERNAL SOURCES:
     :path: "../node_modules/react-native/ReactCommon/jsiexecutor"
   React-jsinspector:
     :path: "../node_modules/react-native/ReactCommon/jsinspector"
+  react-native-google-places:
+    :path: "../node_modules/react-native-google-places"
   react-native-heic-converter:
     :path: "../node_modules/react-native-heic-converter"
   react-native-image-picker:
@@ -192,6 +208,8 @@ SPEC CHECKSUMS:
   DoubleConversion: 5805e889d232975c086db112ece9ed034df7a0b2
   Folly: 30e7936e1c45c08d884aa59369ed951a8e68cf51
   glog: 1f3da668190260b06b429bb211bfbee5cd790c28
+  GoogleMaps: 5c13302e6fe6bb6e686b267196586b91cd594225
+  GooglePlaces: e874db179f2675c4f3eeda0b686b540273a578b0
   React: ff7ee2ae5ee1c1d9ae2183b4111045b25294bb01
   React-Core: 8e0ea421cae5609d2562850f98421b15030476fa
   React-cxxreact: 326880209990151a7182a813311054e9772ba510
@@ -200,6 +218,7 @@ SPEC CHECKSUMS:
   React-jsi: 21d3153b1153fbf6510a92b6b11e33e725cb7432
   React-jsiexecutor: 7549641e48bafae7bfee3f3ea19bf4901639c5de
   React-jsinspector: 73f24a02fa684ed6a2b828ba116874a2191ded88
+  react-native-google-places: 978bcc6ec4bd1d9b0ab3693e3705d4f1f2459caf
   react-native-heic-converter: 0c4a970a4210dcbea45e5accc705d4e248610ef0
   react-native-image-picker: 3637d63fef7e32a230141ab4660d3ceb773c824f
   React-RCTActionSheet: 9f71d7ae3e8fb10e08d162cbf14c621349dbfab3
@@ -212,12 +231,12 @@ SPEC CHECKSUMS:
   React-RCTText: e0f224898b13af9aa036ea7cb3d438daa68c1044
   React-RCTVibration: 0bea40cd51bd089bd591a8f74c86e91fdf2666c5
   React-RCTWebSocket: 163873f4cdd5f1058a9483443404fc3801581cb6
-  RNCAsyncStorage: 621bad7a889b5bf1583a52547f2dcd3a4d1ff15e
-  RNGestureHandler: 5329a942fce3d41c68b84c2c2276ce06a696d8b0
-  RNSVG: 75670614bca635d3dd64bc267bc199e539cb4fa9
+  RNCAsyncStorage: 6b57de0f6cb0dcfd17521af1681fa39001d3efff
+  RNGestureHandler: 946a7691e41df61e2c4b1884deab41a4cdc3afff
+  RNSVG: f6177f8d7c095fada7cfee2e4bb7388ba426064c
   RNVectorIcons: 0bb4def82230be1333ddaeee9fcba45f0b288ed4
   yoga: c2c050f6ae6e222534760cc82f559b89214b67e2
 
-PODFILE CHECKSUM: ab62bcf73ab3a5126f6ac3954bed5831280ebad9
+PODFILE CHECKSUM: d8855b860bbd659ad1dcae82bdc34cbcd5f4598b
 
 COCOAPODS: 1.8.4

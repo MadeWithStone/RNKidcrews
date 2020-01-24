@@ -7,7 +7,7 @@
  */
 
 import React, { Component } from "react";
-import { View, Text, StyleSheet, Image, Dimensions } from "react-native";
+import { View, Text, StyleSheet, Image, Dimensions, StatusBar } from "react-native";
 import { Button } from 'react-native-elements'
 import { createStackNavigator, createAppContainer, HeaderBackButton } from "react-navigation";
 import SignInScreen from './SignInScreen.js'
@@ -31,7 +31,7 @@ class HomeScreen extends Component {
 
       logo_hor: {
 
-        width: win.width,
+        width: 100+'%',
         height: win.width * 384 / 1125,
 
       }
@@ -39,7 +39,8 @@ class HomeScreen extends Component {
     })
     return (
       <View style={styles.container}>
-        <Image source={Config.logo_horizonatal} style={styles.logo_hor} resizeMode={'cover'} />
+        <StatusBar backgroundColor="#495867" barStyle="dark-content" />
+        <Image source={Config.logo_horizonatal} style={styles.logo_hor} resizeMode={'contain'} />
         <Button
           title="Sign In"
           onPress={() => this.props.navigation.navigate('SignIn')}

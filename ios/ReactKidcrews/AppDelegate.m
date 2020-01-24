@@ -10,6 +10,10 @@
 #import <React/RCTBridge.h>
 #import <React/RCTBundleURLProvider.h>
 #import <React/RCTRootView.h>
+@import GooglePlaces;
+@import GoogleMaps;
+
+#define UIColorFromRGB(rgbValue) [UIColor colorWithRed:((float)((rgbValue & 0xFF0000) >> 16))/255.0 green:((float)((rgbValue & 0xFF00) >> 8))/255.0 blue:((float)(rgbValue & 0xFF))/255.0 alpha:1.0]
 
 @implementation AppDelegate
 
@@ -19,6 +23,11 @@
   RCTRootView *rootView = [[RCTRootView alloc] initWithBridge:bridge
                                                    moduleName:@"ReactKidcrews"
                                             initialProperties:nil];
+  
+  
+  
+  [GMSPlacesClient provideAPIKey:@"AIzaSyAvFfzTj6AlToIBjofgU0Rv6Kxr-OKL8Sg"];
+  [GMSServices provideAPIKey:@"AIzaSyAvFfzTj6AlToIBjofgU0Rv6Kxr-OKL8Sg"];
 
   rootView.backgroundColor = [[UIColor alloc] initWithRed:1.0f green:1.0f blue:1.0f alpha:1];
 
@@ -29,6 +38,8 @@
   [self.window makeKeyAndVisible];
   return YES;
 }
+
+
 
 - (NSURL *)sourceURLForBridge:(RCTBridge *)bridge
 {

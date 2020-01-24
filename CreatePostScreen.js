@@ -7,6 +7,7 @@ import { Button } from 'react-native-elements'
 import { FontAwesomeIcon } from '@fortawesome/react-native-fontawesome'
 import ImagePicker from 'react-native-image-picker';
 import {Calendar, CalendarList, Agenda} from 'react-native-calendars';
+import Loader from './loader'
 
 
 export default class CreatePostScreen extends Component {
@@ -35,7 +36,10 @@ export default class CreatePostScreen extends Component {
             price: 0,
             marked: {},
             priceTitle: "Price: (per hour)",
-            user: {}
+            user: {},
+            imgName: "",
+            loading: false,
+            loadingText: "Uploading Data"
         }
         this.chooseImage = this.chooseImage.bind(this)
         this.postJob = this.postJob.bind(this)
@@ -48,6 +52,10 @@ export default class CreatePostScreen extends Component {
     }
 
     postJob() {
+        this.setState({
+            loading: true,
+            loadingText: "Uploading Data"
+        })
         var job = ''
         if (this.state.job == 'BS') {
             job = "Babysitting"
@@ -59,19 +67,139 @@ export default class CreatePostScreen extends Component {
         console.log("user: "+this.state.user)
 
         let date = new Date()
-        let d = date.getFullYear()+date.getMonth()+date.getDay()
-        let post = {
-            _id: this.state.user._id,
-            dateUp: d,
-            ratings: [],
-            jobSpecs: {
-                title: job,
-                bio: this.state.bio,
-                cpr: this.state.cpr.value,
-                price: this.state.price,
-                available: arr
-            }
+        console.log(date)
+        var day = date.getDate()
+        if (day < 10) {
+            day = 0+""+day
+            day = parseInt(day, 10)
         }
+        var month = date.getMonth() + 1
+        if (month < 10) {
+            month = 0+""+month
+            month = parseInt(month, 10)
+        }
+        let d = date.getFullYear()+""+month+""+day
+        let ds = parseInt(d, 10)
+        console.log("day: "+ds)
+        var source = { uri: this.state.image };
+        let fileName = this.state.imgName
+
+        fileName = job+"_"+this.state.user._id + '.jpg'
+        source = { uri: this.state.image, fileName };
+
+        // You can also display the image using data:
+        // const source = { uri: 'data:image/jpeg;base64,' + response.data };
+        
+
+        
+
+        /*var s3 = new AWS.S3({ accessKeyId: 'AKIAZQ2OPAJ25DM23QK4', secretAccessKey: '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', region: 'USEast' })
+        var params = { Bucket: 'kidcrews', Key: 'user_images/', ContentType: 'image/jpeg' }
+        s3.getSignedUrl('putObject', params, function (err, url) {
+            console.log('Your generated pre-signed ULR is', url)
+        })*/
+
+        let server = Config.server + "/jobs/image"
+        //let body = this.createFormData(this.state.userImage, {})
+        const body = new FormData()
+        let name = fileName
+
+        body.append(
+            'file', {
+            uri: this.state.image,
+            type: "image/" + this.state.imgName,
+            name: name,
+        })
+        body.append(
+            '_id', this.state.user._id
+        )
+
+        console.log(body)
+        console.log("fetching")
+        fetch(server, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'multipart/form-data',
+                'authentication': 'Token ' + this.state.user.token
+            },
+            body: body
+        })
+            .then((response) => response.json())
+            .then(async (responseJSON) => {
+                console.log(responseJSON)
+                var data = responseJSON
+                console.log('responseJSON: ' + data)
+                this.setState({
+                    loading: true,
+                    loadingText: "Posting"
+                })
+                
+
+                let post = {
+                    _id: this.state.user._id,
+                    dateUp: ds,
+                    ratings: [],
+                    jobSpecs: {
+                        title: job,
+                        bio: this.state.bio,
+                        cpr: this.state.cpr.value,
+                        price: parseFloat(this.state.price),
+                        available: arr,
+                        img: data.url
+                    }
+                }
+
+                let server = Config.server + "/jobs/create"
+                let body = JSON.stringify({
+                    job: post
+
+                })
+                fetch(server, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'authentication': 'Token ' + this.state.user.Token
+                    },
+                    body: body
+                })
+                    .then((response) => response.status)
+                    .then(async (responseStatues) => {
+                        console.log('res: ' + responseStatues)
+                        await this.setState({
+                            loading: false,
+                            loadingText: "Uploading Data"
+                        })
+                        const { goBack } = this.props.navigation;
+                        var delayInMilliseconds = 200;
+
+                        setTimeout(function() {
+                            Alert.alert(
+                                'Posted',
+                                'Your listing was posted successfully',
+                                [
+                                  {text: 'OK', onPress: () => goBack()},
+                                ],
+                                {cancelable: false},
+                              );
+                          }, delayInMilliseconds);
+                        
+                        
+                    })
+                    
+                    .catch((error) => {
+                        this.setState({
+                            loading: false,
+                            loadingText: "Uploading Data"
+                        })
+                        alert("error")
+                        console.log("error: " + error + "; server: " + server + "; json: " + body)
+                    })
+
+            })
+            .catch((error) => {
+                alert("error")
+                console.log("error: " + error + "; server: " + server + "; json: " + body)
+            })
     }
 
     async load(key) {
@@ -132,6 +260,7 @@ export default class CreatePostScreen extends Component {
           
               this.setState({
                 image: source,
+                imgName: response.fileName
               });
             }
           });
@@ -149,6 +278,9 @@ export default class CreatePostScreen extends Component {
         const available = {key: 'available', color: '#fe5f55', selectedDotColor: '#495867'}
         
         return (
+            <View>
+            <Loader
+            loading={this.state.loading} text={this.state.loadingText} />
             <ScrollView style={styles.scroll}>
                 <Picker 
                     selectedValue={this.state.job}
@@ -247,6 +379,7 @@ export default class CreatePostScreen extends Component {
                  </View>
                  <View style={{height: 20}}/>
             </ScrollView>
+            </View>
         )
     }
 }
