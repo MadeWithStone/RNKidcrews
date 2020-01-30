@@ -12,9 +12,11 @@ import { Button } from 'react-native-elements'
 import { FontAwesomeIcon } from '@fortawesome/react-native-fontawesome'
 import {Calendar, CalendarList, Agenda} from 'react-native-calendars';
 
-import { faStar, faIdCard, faUserCircle} from '@fortawesome/free-solid-svg-icons'
+import { faStar, faIdCard, faUserCircle, faBell} from '@fortawesome/free-solid-svg-icons'
 import Filter from './FilterModel'
 import { ConsoleLogger } from '@aws-amplify/core';
+import NotificationsScreen from './NotificationsScreen';
+import NotificationsViewScreen from './NotificationsPostScreen';
 
 class FeedScreen extends Component {
 
@@ -380,7 +382,7 @@ const styles = StyleSheet.create({
         alignItems: 'center',
         justifyContent: 'space-around',
         paddingLeft: 20,
-        paddingRight: 20,
+        paddingRight: 20, 
     },
     acrivityIndicator: {
         height: 50,
@@ -405,9 +407,15 @@ const profile = createStackNavigator({
     Address: GooglePlacesInput,
 }, { defaultNavigationOptions: Config.navBarStyles })
 
+const notifications = createStackNavigator({
+    Notes: NotificationsScreen,
+    View: NotificationsViewScreen,
+}, { defaultNavigationOptions: Config.navBarStyles })
+
 const TabNavigator = createBottomTabNavigator(
     {
         Listings: feed,
+        Notifications: notifications,
         Profile: profile
     },
     {
@@ -421,6 +429,8 @@ const TabNavigator = createBottomTabNavigator(
             // You can check the implementation below.
           } else if (routeName === 'Profile') {
             icon = <FontAwesomeIcon icon={faUserCircle} size={25} color={tintColor} />;
+          } else if (routeName === 'Notifications') {
+            icon = <FontAwesomeIcon icon={faBell} size={25} color={tintColor} />;
           }
   
           // You can return any component that you like here!
