@@ -28,8 +28,10 @@
 		5F464613E746459F89846B7D /* Zocial.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 743F353FC1734F1EBBBA9AAA /* Zocial.ttf */; };
 		798D07CA0E90495C9E907B3A /* FontAwesome5_Brands.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 28EC1336791C42C9A191A6DD /* FontAwesome5_Brands.ttf */; };
 		7AB9EAD3EC69438593EC45F3 /* FontAwesome.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 90807C0E711544BD963A17C9 /* FontAwesome.ttf */; };
+		83169655F8F80A891D23CD65 /* Instabug.framework in Embed Instabug Framework */ = {isa = PBXBuildFile; fileRef = 7581BA5414C1BF3B43A77E2D /* Instabug.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		8EBC07F6721A4A45B4B3B2E6 /* SimpleLineIcons.ttf in Resources */ = {isa = PBXBuildFile; fileRef = B40413C4E753407EAB6BA280 /* SimpleLineIcons.ttf */; };
 		9691097B4E7386F727D0DBAE /* libPods-ReactKidcrews.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 3E13FBBE10A734FF78CF506C /* libPods-ReactKidcrews.a */; };
+		9A782774855A473870C72733 /* Instabug.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 7581BA5414C1BF3B43A77E2D /* Instabug.framework */; };
 		B006E06446BB4DBBB77C6FD8 /* Ionicons.ttf in Resources */ = {isa = PBXBuildFile; fileRef = E7CBABD4A9DF4E23992BDC28 /* Ionicons.ttf */; };
 		BB394E1B235D098700544151 /* libRNVectorIcons.a in Frameworks */ = {isa = PBXBuildFile; fileRef = BB394E1A235D098700544151 /* libRNVectorIcons.a */; };
 		BB394E1D235E46BD00544151 /* libRNSVG.a in Frameworks */ = {isa = PBXBuildFile; fileRef = BB394E1C235E46BD00544151 /* libRNSVG.a */; };
@@ -55,14 +57,35 @@
 			remoteGlobalIDString = 2D02E47A1E0B4A5D006451C7;
 			remoteInfo = "ReactKidcrews-tvOS";
 		};
+		BB76197C23F10A55003E6775 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = BB76197823F10A55003E6775 /* RNInstabug.xcodeproj */;
+			proxyType = 2;
+			remoteGlobalIDString = 24DF11ED1DA3A2B90056F77C;
+			remoteInfo = RNInstabug;
+		};
 /* End PBXContainerItemProxy section */
+
+/* Begin PBXCopyFilesBuildPhase section */
+		986CB963ED9BB78E7A955668 /* Embed Instabug Framework */ = {
+			isa = PBXCopyFilesBuildPhase;
+			buildActionMask = 2147483647;
+			dstPath = "";
+			dstSubfolderSpec = 10;
+			files = (
+				83169655F8F80A891D23CD65 /* Instabug.framework in Embed Instabug Framework */,
+			);
+			name = "Embed Instabug Framework";
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
 		008F07F21AC5B25A0029DE68 /* main.jsbundle */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = main.jsbundle; sourceTree = "<group>"; };
 		00E356EE1AD99517003FC87E /* ReactKidcrewsTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = ReactKidcrewsTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		00E356F11AD99517003FC87E /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		00E356F21AD99517003FC87E /* ReactKidcrewsTests.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = ReactKidcrewsTests.m; sourceTree = "<group>"; };
-		13B07F961A680F5B00A75B9A /* ReactKidcrews.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = ReactKidcrews.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		13B07F961A680F5B00A75B9A /* ReactKidcrews.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; name = ReactKidcrews.app; path = Kidcrews.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		13B07FAF1A68108700A75B9A /* AppDelegate.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = AppDelegate.h; path = ReactKidcrews/AppDelegate.h; sourceTree = "<group>"; };
 		13B07FB01A68108700A75B9A /* AppDelegate.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = AppDelegate.m; path = ReactKidcrews/AppDelegate.m; sourceTree = "<group>"; };
 		13B07FB21A68108700A75B9A /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = Base; path = Base.lproj/LaunchScreen.xib; sourceTree = "<group>"; };
@@ -84,6 +107,7 @@
 		5F39FB152BBEA6234BC9A83C /* Pods-ReactKidcrews-tvOS.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-ReactKidcrews-tvOS.release.xcconfig"; path = "Target Support Files/Pods-ReactKidcrews-tvOS/Pods-ReactKidcrews-tvOS.release.xcconfig"; sourceTree = "<group>"; };
 		72652D242FA54925B49D99F3 /* MaterialCommunityIcons.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = MaterialCommunityIcons.ttf; path = "../node_modules/react-native-vector-icons/Fonts/MaterialCommunityIcons.ttf"; sourceTree = "<group>"; };
 		743F353FC1734F1EBBBA9AAA /* Zocial.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = Zocial.ttf; path = "../node_modules/react-native-vector-icons/Fonts/Zocial.ttf"; sourceTree = "<group>"; };
+		7581BA5414C1BF3B43A77E2D /* Instabug.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Instabug.framework; path = "../node_modules/instabug-reactnative/ios/Instabug.framework"; sourceTree = "<group>"; };
 		7CA9B3739D6543468A4CA5D5 /* Feather.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = Feather.ttf; path = "../node_modules/react-native-vector-icons/Fonts/Feather.ttf"; sourceTree = "<group>"; };
 		88321288DBCB453AAE6A97ED /* Foundation.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = Foundation.ttf; path = "../node_modules/react-native-vector-icons/Fonts/Foundation.ttf"; sourceTree = "<group>"; };
 		88F3C8F2BEAC44EC5D013011 /* libPods-ReactKidcrews-tvOS.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-ReactKidcrews-tvOS.a"; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -95,6 +119,7 @@
 		B40413C4E753407EAB6BA280 /* SimpleLineIcons.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = SimpleLineIcons.ttf; path = "../node_modules/react-native-vector-icons/Fonts/SimpleLineIcons.ttf"; sourceTree = "<group>"; };
 		BB394E1A235D098700544151 /* libRNVectorIcons.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; path = libRNVectorIcons.a; sourceTree = BUILT_PRODUCTS_DIR; };
 		BB394E1C235E46BD00544151 /* libRNSVG.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; path = libRNSVG.a; sourceTree = BUILT_PRODUCTS_DIR; };
+		BB76197823F10A55003E6775 /* RNInstabug.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = RNInstabug.xcodeproj; path = "../node_modules/instabug-reactnative/ios/RNInstabug.xcodeproj"; sourceTree = "<group>"; };
 		D45E78BDABA730DC6B090CD6 /* Pods-ReactKidcrews.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-ReactKidcrews.debug.xcconfig"; path = "Target Support Files/Pods-ReactKidcrews/Pods-ReactKidcrews.debug.xcconfig"; sourceTree = "<group>"; };
 		D54D108B280D5758B0B0F348 /* Pods-ReactKidcrews-tvOSTests.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-ReactKidcrews-tvOSTests.release.xcconfig"; path = "Target Support Files/Pods-ReactKidcrews-tvOSTests/Pods-ReactKidcrews-tvOSTests.release.xcconfig"; sourceTree = "<group>"; };
 		E1BF821E4F894660B6006622 /* MaterialIcons.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = MaterialIcons.ttf; path = "../node_modules/react-native-vector-icons/Fonts/MaterialIcons.ttf"; sourceTree = "<group>"; };
@@ -121,6 +146,7 @@
 				BB394E1D235E46BD00544151 /* libRNSVG.a in Frameworks */,
 				BB394E1B235D098700544151 /* libRNVectorIcons.a in Frameworks */,
 				9691097B4E7386F727D0DBAE /* libPods-ReactKidcrews.a in Frameworks */,
+				9A782774855A473870C72733 /* Instabug.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -185,6 +211,7 @@
 				88F3C8F2BEAC44EC5D013011 /* libPods-ReactKidcrews-tvOS.a */,
 				4DA2D8C0B60791914205439A /* libPods-ReactKidcrews-tvOSTests.a */,
 				AE7DAA76928DAEDF437B068B /* libPods-ReactKidcrewsTests.a */,
+				7581BA5414C1BF3B43A77E2D /* Instabug.framework */,
 			);
 			name = Frameworks;
 			sourceTree = "<group>";
@@ -192,6 +219,7 @@
 		832341AE1AAA6A7D00B99B32 /* Libraries */ = {
 			isa = PBXGroup;
 			children = (
+				BB76197823F10A55003E6775 /* RNInstabug.xcodeproj */,
 			);
 			name = Libraries;
 			sourceTree = "<group>";
@@ -261,6 +289,14 @@
 			name = Resources;
 			sourceTree = "<group>";
 		};
+		BB76197923F10A55003E6775 /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				BB76197D23F10A55003E6775 /* libRNInstabug.a */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
@@ -294,6 +330,10 @@
 				13B07F8E1A680F5B00A75B9A /* Resources */,
 				00DD1BFF1BD5951E006B06BC /* Bundle React Native code and images */,
 				61788F8BCEED9334CA61914A /* [CP] Copy Pods Resources */,
+				986CB963ED9BB78E7A955668 /* Embed Instabug Framework */,
+				A7B4610E9417673A6DB54072 /* Strip Frameworks */,
+				4FC0A2969B986C5DAF8E61FC /* Upload Sourcemap */,
+				06097863AF5367264BA2C769 /* [CP] Embed Pods Frameworks */,
 			);
 			buildRules = (
 			);
@@ -357,7 +397,7 @@
 						TestTargetID = 13B07F861A680F5B00A75B9A;
 					};
 					13B07F861A680F5B00A75B9A = {
-						DevelopmentTeam = 8496236P6D;
+						DevelopmentTeam = E7U922W6SF;
 					};
 					2D02E47A1E0B4A5D006451C7 = {
 						CreatedOnToolsVersion = 8.2.1;
@@ -381,6 +421,12 @@
 			mainGroup = 83CBB9F61A601CBA00E9B192;
 			productRefGroup = 83CBBA001A601CBA00E9B192 /* Products */;
 			projectDirPath = "";
+			projectReferences = (
+				{
+					ProductGroup = BB76197923F10A55003E6775 /* Products */;
+					ProjectRef = BB76197823F10A55003E6775 /* RNInstabug.xcodeproj */;
+				},
+			);
 			projectRoot = "";
 			targets = (
 				13B07F861A680F5B00A75B9A /* ReactKidcrews */,
@@ -390,6 +436,16 @@
 			);
 		};
 /* End PBXProject section */
+
+/* Begin PBXReferenceProxy section */
+		BB76197D23F10A55003E6775 /* libRNInstabug.a */ = {
+			isa = PBXReferenceProxy;
+			fileType = archive.ar;
+			path = libRNInstabug.a;
+			remoteRef = BB76197C23F10A55003E6775 /* PBXContainerItemProxy */;
+			sourceTree = BUILT_PRODUCTS_DIR;
+		};
+/* End PBXReferenceProxy section */
 
 /* Begin PBXResourcesBuildPhase section */
 		00E356EC1AD99517003FC87E /* Resources */ = {
@@ -456,6 +512,24 @@
 			shellPath = /bin/sh;
 			shellScript = "export NODE_BINARY=node\n../node_modules/react-native/scripts/react-native-xcode.sh\n";
 		};
+		06097863AF5367264BA2C769 /* [CP] Embed Pods Frameworks */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+				"${PODS_ROOT}/Target Support Files/Pods-ReactKidcrews/Pods-ReactKidcrews-frameworks.sh",
+				"${PODS_ROOT}/../../node_modules/instabug-reactnative/ios/Instabug.framework",
+			);
+			name = "[CP] Embed Pods Frameworks";
+			outputPaths = (
+				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/Instabug.framework",
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "\"${PODS_ROOT}/Target Support Files/Pods-ReactKidcrews/Pods-ReactKidcrews-frameworks.sh\"\n";
+			showEnvVarsInLog = 0;
+		};
 		2D02E4CB1E0B4B27006451C7 /* Bundle React Native Code And Images */ = {
 			isa = PBXShellScriptBuildPhase;
 			buildActionMask = 2147483647;
@@ -469,6 +543,24 @@
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
 			shellScript = "export NODE_BINARY=node\n../node_modules/react-native/scripts/react-native-xcode.sh";
+		};
+		4FC0A2969B986C5DAF8E61FC /* Upload Sourcemap */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputFileListPaths = (
+			);
+			inputPaths = (
+			);
+			name = "Upload Sourcemap";
+			outputFileListPaths = (
+			);
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 1;
+			shellPath = /bin/sh;
+			shellScript = "bash \"../node_modules/instabug-reactnative/ios/upload_sourcemap.sh\"\n";
 		};
 		61788F8BCEED9334CA61914A /* [CP] Copy Pods Resources */ = {
 			isa = PBXShellScriptBuildPhase;
@@ -587,6 +679,24 @@
 			shellPath = /bin/sh;
 			shellScript = "diff \"${PODS_PODFILE_DIR_PATH}/Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [ $? != 0 ] ; then\n    # print error to STDERR\n    echo \"error: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\" >&2\n    exit 1\nfi\n# This output is used by Xcode 'outputs' to avoid re-running this script phase.\necho \"SUCCESS\" > \"${SCRIPT_OUTPUT_FILE_0}\"\n";
 			showEnvVarsInLog = 0;
+		};
+		A7B4610E9417673A6DB54072 /* Strip Frameworks */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputFileListPaths = (
+			);
+			inputPaths = (
+			);
+			name = "Strip Frameworks";
+			outputFileListPaths = (
+			);
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "bash \"${BUILT_PRODUCTS_DIR}/${FRAMEWORKS_FOLDER_PATH}/Instabug.framework/strip-frameworks.sh\"\n";
 		};
 		E7162AA43386E808C50A0EE2 /* [CP] Check Pods Manifest.lock */ = {
 			isa = PBXShellScriptBuildPhase;
@@ -765,7 +875,11 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CURRENT_PROJECT_VERSION = 1;
 				DEAD_CODE_STRIPPING = NO;
-				DEVELOPMENT_TEAM = 8496236P6D;
+				DEVELOPMENT_TEAM = E7U922W6SF;
+				FRAMEWORK_SEARCH_PATHS = (
+					"$(inherited)",
+					"../node_modules/instabug-reactnative/ios",
+				);
 				HEADER_SEARCH_PATHS = "$(inherited)";
 				INFOPLIST_FILE = ReactKidcrews/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 10.0;
@@ -775,8 +889,8 @@
 					"-ObjC",
 					"-lc++",
 				);
-				PRODUCT_BUNDLE_IDENTIFIER = com.kidcrews.ReactKidcrews;
-				PRODUCT_NAME = ReactKidcrews;
+				PRODUCT_BUNDLE_IDENTIFIER = com.kidcrews.kidcrews;
+				PRODUCT_NAME = Kidcrews;
 				TARGETED_DEVICE_FAMILY = 1;
 				VERSIONING_SYSTEM = "apple-generic";
 			};
@@ -789,7 +903,11 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CURRENT_PROJECT_VERSION = 1;
 				DEAD_CODE_STRIPPING = NO;
-				DEVELOPMENT_TEAM = 8496236P6D;
+				DEVELOPMENT_TEAM = E7U922W6SF;
+				FRAMEWORK_SEARCH_PATHS = (
+					"$(inherited)",
+					"../node_modules/instabug-reactnative/ios",
+				);
 				HEADER_SEARCH_PATHS = "$(inherited)";
 				INFOPLIST_FILE = ReactKidcrews/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 10.0;
@@ -799,8 +917,8 @@
 					"-ObjC",
 					"-lc++",
 				);
-				PRODUCT_BUNDLE_IDENTIFIER = com.kidcrews.ReactKidcrews;
-				PRODUCT_NAME = ReactKidcrews;
+				PRODUCT_BUNDLE_IDENTIFIER = com.kidcrews.kidcrews;
+				PRODUCT_NAME = Kidcrews;
 				TARGETED_DEVICE_FAMILY = 1;
 				VERSIONING_SYSTEM = "apple-generic";
 			};
@@ -810,7 +928,6 @@
 			isa = XCBuildConfiguration;
 			baseConfigurationReference = AC247E274C3A992FBBFB392F /* Pods-ReactKidcrews-tvOS.debug.xcconfig */;
 			buildSettings = {
-				ASSETCATALOG_COMPILER_APPICON_NAME = "App Icon & Top Shelf Image";
 				ASSETCATALOG_COMPILER_LAUNCHIMAGE_NAME = LaunchImage;
 				CLANG_ANALYZER_NONNULL = YES;
 				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
@@ -839,7 +956,6 @@
 			isa = XCBuildConfiguration;
 			baseConfigurationReference = 5F39FB152BBEA6234BC9A83C /* Pods-ReactKidcrews-tvOS.release.xcconfig */;
 			buildSettings = {
-				ASSETCATALOG_COMPILER_APPICON_NAME = "App Icon & Top Shelf Image";
 				ASSETCATALOG_COMPILER_LAUNCHIMAGE_NAME = LaunchImage;
 				CLANG_ANALYZER_NONNULL = YES;
 				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;

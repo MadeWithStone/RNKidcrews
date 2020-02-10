@@ -14,11 +14,18 @@ import SignInScreen from './SignInScreen.js'
 import Config from './config.js'
 import FeedScreen from "./FeedScreen.js";
 import SignUpScreen from "./SignUpScreen.js";
+import Instabug from 'instabug-reactnative';
 
 class HomeScreen extends Component {
   static navigationOptions = {
     title: "Welcome"
   }
+
+  constructor(props) {
+    super(props)
+    Instabug.startWithToken('acb95757317442fcebbf88073b79a399', [Instabug.invocationEvent.shake]);
+  }
+
 
   render() {
     const win = Dimensions.get('window')
@@ -37,6 +44,7 @@ class HomeScreen extends Component {
       }
 
     })
+    
     return (
       <View style={styles.container}>
         <StatusBar backgroundColor="#495867" barStyle="dark-content" />
