@@ -33,28 +33,31 @@ export default class SignInScreen extends Component {
 
         console.log("email: " + this.state.email)
 
+    
+
         if (this.state.email != null && this.state.pass != null) {
 
             let server = Config.server + "/api/users/login"
-            let body = JSON.stringify({
+            let body = {
                 user: {
                     email: this.state.email,
                     password: this.state.pass
                 }
 
-            })
-            console.log("fetching")
-            fetch(server, {
+            }
+            let fetchStuff = {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json'
                 },
                 body: body
-            })
+            }
+            console.log("fetching")
+            fetch(server, fetchStuff)
                 .then((response) => response.json())
                 .then(async (responseJson) => {
                     var user = responseJson.user
-                    if (user.verified == "false") {
+                    if (user.verified != "true") {
                         alert("You must verify your email first")
                     } else {
                         user.password = this.state.pass
@@ -64,7 +67,7 @@ export default class SignInScreen extends Component {
                 })
                 .catch((error) => {
                     alert("error")
-                    console.log("error: " + error + "; server: " + server + "; json: " + body)
+                    console.log("error: " + error + "; server: " + server + "; json: " + JSON.stringify(fetchStuff))
                 })
         }
 

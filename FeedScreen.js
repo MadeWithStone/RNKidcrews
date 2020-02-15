@@ -240,7 +240,7 @@ class FeedScreen extends Component {
                 <View style={{padding: 10, flex: 1, flexDirection: "row", alignItems: 'stretch', justifyContent: 'space-between', borderBottomColor: '#495867', borderBottomWidth: StyleSheet.hairlineWidth}}>
                         <View style={{width: width*0.2, alignItems: "center"}}>
                             <Image 
-                                source={{uri: post.jobSpecs.img}} 
+                                source={{uri: post.user.profileImage}} 
                                 style={{width: width*0.2, height: width*0.2, borderRadius: width*0.3*0.5, marginRight: 5}}
                             />
                             <View style={{flexDirection: 'row', justifyContent: 'center'}}>

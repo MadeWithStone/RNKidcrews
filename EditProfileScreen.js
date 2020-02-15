@@ -157,15 +157,16 @@ export default class EditProfileScreen extends Component {
             headers: {
                 'Content-Type': 'application/json',
                 'Accept': 'application/json',
-                //'authorization': 'Token ' + this.state.user.token
+                'authorization': 'Token ' + this.state.user.token
             },
             body: body
         })
-            .then((response) => response.status)
+            .then((response) => response.json())
             .then(async (responseStatus) => {
                 if (responseStatus == 200) {
                     this.getUserData
                 }
+                console.log("Image Res: "+JSON.stringify(response.json()))
                 this.setState({
                     loading: false
                 })
@@ -174,7 +175,7 @@ export default class EditProfileScreen extends Component {
             })
             .catch((error) => {
                 alert("error")
-                console.log("error: " + error + "; server: " + server + "; json: " + body)
+                console.log("error: " + error + "; server: " + server + "; json: " + body+"; responseStatus: "+responseStatus)
             })
 
     }
@@ -183,6 +184,8 @@ export default class EditProfileScreen extends Component {
         const options = {
             title: 'Select Profile Image',
             color: 'blue',
+            maxWidth: 512,
+            maxHeight: 512,
             storageOptions: {
                 skipBackup: true,
                 path: 'images',
@@ -209,10 +212,15 @@ export default class EditProfileScreen extends Component {
                 fileName = this.state.user._id + '_pi.jpg'
                 source = { uri: response.uri, fileName };
 
+                var newImg = response.uri
+
+                
+
                 // You can also display the image using data:
                 // const source = { uri: 'data:image/jpeg;base64,' + response.data };
                 var image = this.state.user
                 image.profileImage = response.uri
+
 
                 this.setState({
                     user: image,
@@ -232,7 +240,7 @@ export default class EditProfileScreen extends Component {
 
                 body.append(
                     'file', {
-                    uri: this.state.user.profileImage,
+                    uri: newImg,
                     type: "image/" + response.fileName,
                     name: name,
                 })
@@ -241,26 +249,26 @@ export default class EditProfileScreen extends Component {
                 )
 
                 console.log(body)
-                console.log("fetching")
+                console.log("fetching: "+this.state.user.token)
                 fetch(server, {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'multipart/form-data',
-                        'Token': 'Token ' + this.state.user.token
+                        'authorization': 'Token ' + this.state.user.token
                     },
                     body: body
                 })
-                    .then((response) => response.json())
-                    .then(async (responseJSON) => {
+                    .then((response) => console.log("response status: "+response.status))
+                    /*.then(async (responseJSON) => {
                         console.log(responseJSON)
                         var data = responseJSON
                         console.log('responseJSON: ' + data)
                         this.getUserData()
 
-                    })
+                    })*/
                     .catch((error) => {
                         alert("error")
-                        console.log("error: " + error + "; server: " + server + "; json: " + body)
+                        console.log("error: " + error + "; server: " + server + "; json: " + body+"; responseStatus: "+response.status)
                     })
             }
         });
