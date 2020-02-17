@@ -120,7 +120,7 @@ export default class CreatePostScreen extends Component {
             method: 'POST',
             headers: {
                 'Content-Type': 'multipart/form-data',
-                'authentication': 'Token ' + this.state.user.token
+                'authorization': 'Token ' + this.state.user.token
             },
             body: body
         })
@@ -237,6 +237,8 @@ export default class CreatePostScreen extends Component {
         this.setState({height: width})
         const options = {
             title: 'Image',
+            maxWidth: 512,
+            maxHeight: 512,
             storageOptions: {
               skipBackup: true,
               path: 'images',

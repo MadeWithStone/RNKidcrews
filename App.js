@@ -26,6 +26,10 @@ class HomeScreen extends Component {
     Instabug.startWithToken('acb95757317442fcebbf88073b79a399', [Instabug.invocationEvent.shake]);
   }
 
+  componentDidMount() {
+    
+  }
+
 
   render() {
     const win = Dimensions.get('window')

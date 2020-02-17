@@ -235,12 +235,14 @@ class FeedScreen extends Component {
             }
             let p = parseInt(post.jobSpecs.price, 10)
             const price = p * parseInt(this.state.multi, 10)
+            console.log("profile image: "+post.user.profileImage)
             listings.push(
             <TouchableOpacity activeOpacity={0.7} key={post._id} onPress={() => this.props.navigation.navigate('Post', {post: post})}>
                 <View style={{padding: 10, flex: 1, flexDirection: "row", alignItems: 'stretch', justifyContent: 'space-between', borderBottomColor: '#495867', borderBottomWidth: StyleSheet.hairlineWidth}}>
                         <View style={{width: width*0.2, alignItems: "center"}}>
                             <Image 
-                                source={{uri: post.user.profileImage}} 
+                                source={{uri: post.user.profileImage,
+                                        cache: 'reload'}} 
                                 style={{width: width*0.2, height: width*0.2, borderRadius: width*0.3*0.5, marginRight: 5}}
                             />
                             <View style={{flexDirection: 'row', justifyContent: 'center'}}>

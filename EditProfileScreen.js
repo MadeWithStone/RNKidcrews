@@ -161,12 +161,11 @@ export default class EditProfileScreen extends Component {
             },
             body: body
         })
-            .then((response) => response.json())
+            .then((response) => response.status)
             .then(async (responseStatus) => {
                 if (responseStatus == 200) {
                     this.getUserData
                 }
-                console.log("Image Res: "+JSON.stringify(response.json()))
                 this.setState({
                     loading: false
                 })
@@ -175,7 +174,7 @@ export default class EditProfileScreen extends Component {
             })
             .catch((error) => {
                 alert("error")
-                console.log("error: " + error + "; server: " + server + "; json: " + body+"; responseStatus: "+responseStatus)
+                console.log("error: " + error + "; server: " + server + "; json: " + body)
             })
 
     }
@@ -184,8 +183,8 @@ export default class EditProfileScreen extends Component {
         const options = {
             title: 'Select Profile Image',
             color: 'blue',
-            maxWidth: 512,
-            maxHeight: 512,
+            maxWidth: 256,
+            maxHeight: 256,
             storageOptions: {
                 skipBackup: true,
                 path: 'images',
@@ -254,18 +253,18 @@ export default class EditProfileScreen extends Component {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'multipart/form-data',
-                        'authorization': 'Token ' + this.state.user.token
+                        'authorization': 'Token ' + this.state.user.token,
                     },
                     body: body
                 })
-                    .then((response) => console.log("response status: "+response.status))
-                    /*.then(async (responseJSON) => {
+                    .then((response) => response.json())
+                    .then(async (responseJSON) => {
                         console.log(responseJSON)
                         var data = responseJSON
                         console.log('responseJSON: ' + data)
                         this.getUserData()
 
-                    })*/
+                    })
                     .catch((error) => {
                         alert("error")
                         console.log("error: " + error + "; server: " + server + "; json: " + body+"; responseStatus: "+response.status)

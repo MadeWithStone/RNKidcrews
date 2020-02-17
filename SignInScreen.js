@@ -50,7 +50,7 @@ export default class SignInScreen extends Component {
                 headers: {
                     'Content-Type': 'application/json'
                 },
-                body: body
+                body: JSON.stringify(body)
             }
             console.log("fetching")
             fetch(server, fetchStuff)
@@ -62,6 +62,7 @@ export default class SignInScreen extends Component {
                     } else {
                         user.password = this.state.pass
                         await this.save(user, 'currentUser')
+                        console.log("user img: "+user.profileImage)
                         this.props.navigation.navigate('Feed')
                     }
                 })
