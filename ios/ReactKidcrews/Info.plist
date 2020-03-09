@@ -37,16 +37,18 @@
 			</dict>
 		</dict>
 	</dict>
-	<key>NSLocationWhenInUseUsageDescription</key>
-	<string></string>
 	<key>NSCameraUsageDescription</key>
 	<string>Kidcrews needs your camera in order for you to upload images.</string>
-	<key>NSPhotoLibraryUsageDescription</key>
-	<string>Kidcrews needs your photo library in order for you to upload images.</string>
-	<key>NSPhotoLibraryAddUsageDescription</key>
-	<string>Kidcrews wants to save your images to your photo library.</string>
+	<key>NSLocationAlwaysAndWhenInUseUsageDescription</key>
+	<string>Kidcrews would like to use your location for enhanced matching.</string>
+	<key>NSLocationWhenInUseUsageDescription</key>
+	<string>Kidcrews would like to access your location.</string>
 	<key>NSMicrophoneUsageDescription</key>
 	<string>Kidcrews needs your microphone.</string>
+	<key>NSPhotoLibraryAddUsageDescription</key>
+	<string>Kidcrews wants to save your images to your photo library.</string>
+	<key>NSPhotoLibraryUsageDescription</key>
+	<string>Kidcrews needs your photo library in order for you to upload images.</string>
 	<key>UILaunchStoryboardName</key>
 	<string>Launch Screen</string>
 	<key>UIRequiredDeviceCapabilities</key>

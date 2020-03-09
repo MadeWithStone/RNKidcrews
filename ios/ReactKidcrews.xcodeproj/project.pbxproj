@@ -729,7 +729,7 @@
 			baseConfigurationReference = 45A4A07384BC86265B5697B4 /* Pods-ReactKidcrews.debug.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
-				CURRENT_PROJECT_VERSION = 7;
+				CURRENT_PROJECT_VERSION = 10;
 				DEAD_CODE_STRIPPING = NO;
 				DEVELOPMENT_TEAM = E7U922W6SF;
 				INFOPLIST_FILE = ReactKidcrews/Info.plist;
@@ -750,7 +750,7 @@
 			baseConfigurationReference = 7F68002B3CFDA9AB97D14741 /* Pods-ReactKidcrews.release.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
-				CURRENT_PROJECT_VERSION = 7;
+				CURRENT_PROJECT_VERSION = 10;
 				DEAD_CODE_STRIPPING = NO;
 				DEVELOPMENT_TEAM = E7U922W6SF;
 				INFOPLIST_FILE = ReactKidcrews/Info.plist;
