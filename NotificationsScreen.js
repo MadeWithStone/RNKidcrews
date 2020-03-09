@@ -8,6 +8,7 @@ import { FontAwesomeIcon } from '@fortawesome/react-native-fontawesome'
 import {Calendar, CalendarList, Agenda} from 'react-native-calendars';
 
 import { faStar, faIdCard, faUserCircle} from '@fortawesome/free-solid-svg-icons'
+import NotificationMowingView from './NotificationMowingView.js'
 
 export default class NotificationsScreen extends Component {
 
@@ -97,6 +98,10 @@ export default class NotificationsScreen extends Component {
 
         let bs = []
         let m = []
+        let bsR = []
+        let mR = []
+        let mowing = {hired: [], hiredR: [], worker: [], workerR: []}
+        let babysitting = {hired: [], hiredR: [], worker: [], workerR: []}
         let width = this.state.width
         if (this.state.jobsList.length > 0){
             this.state.jobsList.map((post) => {
@@ -107,7 +112,7 @@ export default class NotificationsScreen extends Component {
                 }
                 let price = parseInt(post.jobSpecs.price, 10)
                 if (post.jobSpecs.title == "Babysitting") {
-                    bs.push(
+                    /*bs.push(
                         <TouchableOpacity activeOpacity={0.7} key={post._id} onPress={() => this.props.navigation.navigate('View', {post: post})}>
                             <View style={{padding: 10, flex: 1, flexDirection: "row", alignItems: 'stretch', justifyContent: 'space-between', borderBottomColor: '#495867', borderBottomWidth: StyleSheet.hairlineWidth}}>
                                 <View style={{width: width*0.2, alignItems: "center"}}>
@@ -136,14 +141,15 @@ export default class NotificationsScreen extends Component {
                                     
                                 </View>
                             </View>
-                        </TouchableOpacity>);
+                        </TouchableOpacity>);*/
+                        bs.push(post)
                 } else if (post.jobSpecs.title == "Mowing") {
                     var cpr
                     if (post.cpr) {
                         cpr = 'CPR'
                     }
                     let price = parseInt(post.jobSpecs.price, 10)
-                    m.push(
+                    /*m.push(
                         <TouchableOpacity activeOpacity={0.7} key={post._id} onPress={() => this.props.navigation.navigate('Post', {post: post})}>
                             <View style={{padding: 10, flex: 1, flexDirection: "row", alignItems: 'stretch', justifyContent: 'space-between', borderBottomColor: '#495867', borderBottomWidth: StyleSheet.hairlineWidth}}>
                                 <View style={{width: width*0.2, alignItems: "center"}}>
@@ -172,15 +178,97 @@ export default class NotificationsScreen extends Component {
                                     
                                 </View>
                             </View>
-                        </TouchableOpacity>);
+                        </TouchableOpacity>);*/
+                    m.push(post)
 
                 }
             })
+
+            m.map((mower) => {
+                let hired = mower.hired
+                let employer = false
+                for (i in hired) {
+                    
+                    if (hired[i][2] == this.state.user._id) {
+                        if (hired[i][1] == true) {
+                            //hired
+                            mowing.hired.push(<NotificationMowingView post={mower} width={this.state.width}/>)
+                        } else if (hired[i][1] == false) {
+                            //hire requested
+                            mowing.hireR.push(<NotificationMowingView post={mower} width={this.state.width}/>)
+                        }
+                        employer = true
+                    } 
+                }
+                if (!employer) {
+                    //worker
+                    for (i in hired) {
+                        if (hired[i][1] == true) {
+                            //worker hired
+                            mowing.worker.push(<NotificationMowingView post={mower} width={this.state.width}/>)
+                        } else if (hired[i][1] == false) {
+                            //worker requested 5e4bf93f83c80e12236ccd4f
+                            mowing.workerR.push(<NotificationMowingView post={mower} width={this.state.width}/>)
+                        }
+                    }
+                }
+            })
+
+            bs.map((sitter) => {
+                let hired = sitter.hired
+                let employer = false
+                for (i in hired) {
+                    if (hired[i][2] == this.state.user._id) {
+                        if (hired[i][1] == true) {
+                            //hired
+                            babysitting.hired.push(sitter)
+                        } else if (hired[i][1] == false) {
+                            //hire requested
+                            babysitting.hireR.push(sitter)
+                        }
+                        employer = true
+                    } 
+                }
+                if (!employer) {
+                    //worker
+                    for (i in hired) {
+                        if (hired[i][1] == true) {
+                            //worker hired
+                            babysitting.worker.push(sitter)
+                        } else if (hired[i][1] == false) {
+                            //worker requested
+                            babysitting.workerR.push(sitter)
+                        }
+                    }
+                }
+            })
+
         }
 
-        if (m.length > 0) {
-            jobs.push(<View style={styles.subHeaderView} key={"mowers"}><Text style={styles.subHeaderTitle}>Mowers</Text></View>)
-            m.map((mower) => {
+        if (mowing.hired.length > 0) {
+            jobs.push(<View style={styles.subHeaderView} key={"mowers"}><Text style={styles.subHeaderTitle}>Hired</Text></View>)
+            mowing.hired.map((mower) => {
+                jobs.push(mower)
+            })
+        }
+
+        if (mowing.hiredR.length > 0) {
+            jobs.push(<View style={styles.subHeaderView} key={"mowers"}><Text style={styles.subHeaderTitle}>Hire Requested</Text></View>)
+            mowing.hiredR.map((mower) => {
+                jobs.push(mower)
+            })
+        }
+
+        if (mowing.worker.length > 0) {
+            jobs.push(<View style={styles.subHeaderView} key={"mowers"}><Text style={styles.subHeaderTitle}>Hired You</Text></View>)
+            mowing.worker.map((mower) => {
+                jobs.push(mower)
+            })
+        }
+
+        if (mowing.workerR.length > 0) {
+            jobs.push(<View style={styles.subHeaderView} key={"mowers"}><Text style={styles.subHeaderTitle}>Requested to Hire You</Text></View>)
+            mowing.workerR.map((mower) => {
                 jobs.push(mower)
             })
         }
