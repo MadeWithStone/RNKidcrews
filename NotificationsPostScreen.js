@@ -13,7 +13,7 @@ export default class NotificationsViewScreen extends Component {
 
     static navigationOptions = ({ navigation }) => {
         return {
-            title: 'Listing'
+            title: 'Notification'
         }
     }
 

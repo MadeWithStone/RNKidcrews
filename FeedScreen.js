@@ -17,6 +17,7 @@ import Filter from './FilterModel'
 import { ConsoleLogger } from '@aws-amplify/core';
 import NotificationsScreen from './NotificationsScreen';
 import NotificationsViewScreen from './NotificationsPostScreen';
+import Job from './Job.js'
 
 class FeedScreen extends Component {
 
@@ -206,6 +207,11 @@ class FeedScreen extends Component {
                 body: body
             })
             let data = await resp.json()
+            for (i in data) {
+                let newJob =  new Job()
+                newJob.props = data[i]
+                console.log("Job Class: "+newJob.data())
+            }
             this.setState({
                 listings: data
             })

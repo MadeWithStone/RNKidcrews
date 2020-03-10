@@ -188,14 +188,14 @@ export default class NotificationsScreen extends Component {
                 let hired = mower.hired
                 let employer = false
                 for (i in hired) {
-                    
-                    if (hired[i][2] == this.state.user._id) {
+                    console.log("user id: " + hired[i][2]._id +"; "+this.state.user._id)
+                    if (hired[i][2]._id == this.state.user._id) {
                         if (hired[i][1] == true) {
                             //hired
-                            mowing.hired.push(<NotificationMowingView post={mower} width={this.state.width}/>)
+                            mowing.hired.push(<NotificationMowingView post={mower} width={this.state.width} key={mower._id} navigation={this.props.navigation}/>)
                         } else if (hired[i][1] == false) {
                             //hire requested
-                            mowing.hireR.push(<NotificationMowingView post={mower} width={this.state.width}/>)
+                            mowing.hiredR.push(<NotificationMowingView post={mower} width={this.state.width} key={mower._id} navigation={this.props.navigation}/>)
                         }
                         employer = true
                     } 
@@ -205,10 +205,12 @@ export default class NotificationsScreen extends Component {
                     for (i in hired) {
                         if (hired[i][1] == true) {
                             //worker hired
-                            mowing.worker.push(<NotificationMowingView post={mower} width={this.state.width}/>)
+                            console.log("worker hired")
+                            mowing.worker.push(<NotificationMowingView post={mower} width={this.state.width} key={mower._id} navigation={this.props.navigation}/>)
                         } else if (hired[i][1] == false) {
                             //worker requested 5e4bf93f83c80e12236ccd4f
-                            mowing.workerR.push(<NotificationMowingView post={mower} width={this.state.width}/>)
+                            console.log("worker requested")
+                            mowing.workerR.push(<NotificationMowingView post={mower} width={this.state.width} key={mower._id} navigation={this.props.navigation}/>)
                         }
                     }
                 }
@@ -218,7 +220,7 @@ export default class NotificationsScreen extends Component {
                 let hired = sitter.hired
                 let employer = false
                 for (i in hired) {
-                    if (hired[i][2] == this.state.user._id) {
+                    if (hired[i][2]._id == this.state.user._id) {
                         if (hired[i][1] == true) {
                             //hired
                             babysitting.hired.push(sitter)
@@ -246,28 +248,28 @@ export default class NotificationsScreen extends Component {
         }
 
         if (mowing.hired.length > 0) {
-            jobs.push(<View style={styles.subHeaderView} key={"mowers"}><Text style={styles.subHeaderTitle}>Hired</Text></View>)
+            jobs.push(<View style={styles.subHeaderView} key={"hired"}><Text style={styles.subHeaderTitle}>Hired</Text></View>)
             mowing.hired.map((mower) => {
                 jobs.push(mower)
             })
         }
 
         if (mowing.hiredR.length > 0) {
-            jobs.push(<View style={styles.subHeaderView} key={"mowers"}><Text style={styles.subHeaderTitle}>Hire Requested</Text></View>)
+            jobs.push(<View style={styles.subHeaderView} key={"hire requested"}><Text style={styles.subHeaderTitle}>Hire Requested</Text></View>)
             mowing.hiredR.map((mower) => {
                 jobs.push(mower)
             })
         }
 
         if (mowing.worker.length > 0) {
-            jobs.push(<View style={styles.subHeaderView} key={"mowers"}><Text style={styles.subHeaderTitle}>Hired You</Text></View>)
+            jobs.push(<View style={styles.subHeaderView} key={"worker"}><Text style={styles.subHeaderTitle}>Hired You</Text></View>)
             mowing.worker.map((mower) => {
                 jobs.push(mower)
             })
         }
 
         if (mowing.workerR.length > 0) {
-            jobs.push(<View style={styles.subHeaderView} key={"mowers"}><Text style={styles.subHeaderTitle}>Requested to Hire You</Text></View>)
+            jobs.push(<View style={styles.subHeaderView} key={"worker requested"}><Text style={styles.subHeaderTitle}>Requested to Hire You</Text></View>)
             mowing.workerR.map((mower) => {
                 jobs.push(mower)
             })

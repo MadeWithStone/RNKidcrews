@@ -22,7 +22,7 @@ export default class NotificationMowingView extends Component {
         let price = parseInt(post.jobSpecs.price, 10)
         let width = this.state.width
         return (
-            <TouchableOpacity activeOpacity={0.7} key={post._id} onPress={() => this.props.navigation.navigate('Post', {post: post})}>
+            <TouchableOpacity activeOpacity={0.7} key={post._id} onPress={() => this.props.navigation.navigate('View', {post: post})}>
                 <View style={{padding: 10, flex: 1, flexDirection: "row", alignItems: 'stretch', justifyContent: 'space-between', borderBottomColor: '#495867', borderBottomWidth: StyleSheet.hairlineWidth}}>
                     <View style={{width: width*0.2, alignItems: "center"}}>
                         <Image 
@@ -39,7 +39,6 @@ export default class NotificationMowingView extends Component {
                         <Text style={{fontSize: 20, color: '#fe5f55'}}>{post.user.username}</Text>
                         <Text style={{fontSize: 17, color: '#495867'}}>{post.user.firstName}</Text>
                         <Text style={{fontSize: 12, color: '#495867'}}>{post.distance} mi</Text>
-                        <Text style={{fontSize: 12, color: '#495867'}}>{post.jobSpecs.bio}</Text>
                         
                     </View>
                     <View style={{flex: 0.85, alignItems: 'center', marginLeft: 5}}>
