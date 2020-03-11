@@ -8,6 +8,7 @@ import { FontAwesomeIcon } from '@fortawesome/react-native-fontawesome'
 import {Calendar, CalendarList, Agenda} from 'react-native-calendars';
 
 import { faStar, faIdCard, faUserCircle} from '@fortawesome/free-solid-svg-icons'
+import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view'
 
 export default class NotificationsViewScreen extends Component {
 
@@ -337,7 +338,7 @@ export default class NotificationsViewScreen extends Component {
                 <View style={styles.modalBackground}>
                 
                     <View style={styles.activityIndicatorWrapper}>
-                    <ScrollView showsVerticalScrollIndicator={false}>
+                    <KeyboardAwareScrollView showsVerticalScrollIndicator={false}>
                         <Text style={styles.title}>{this.state.text}</Text>
                     <ActivityIndicator
                         style={styles.acrivityIndicator}
@@ -400,7 +401,7 @@ export default class NotificationsViewScreen extends Component {
                         this.setState({hiring: false})
                     }}/>
                     <Button titleStyle={{color: "#2089dc"}} buttonStyle={{backgroundColor: "#fff"}} title="Cancel" onPress={() => this.setState({hiring: false})}/>
-                    </ScrollView>
+                    </KeyboardAwareScrollView>
                     </View>
                     
                     

@@ -1,7 +1,8 @@
 export default {
     buttonColor: "#fe5f55",
     buttonBorderRadius: 10,
-    server: "https://app.kidcrews.com",
+    //server: "https://app.kidcrews.com",
+    server: "http://localhost:3000",
     logo_horizonatal: require("./assets/logo_horizontal.png"),
     buttonStyle: {
         backgroundColor: '#FE5F55',

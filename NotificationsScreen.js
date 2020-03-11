@@ -8,7 +8,11 @@ import { FontAwesomeIcon } from '@fortawesome/react-native-fontawesome'
 import {Calendar, CalendarList, Agenda} from 'react-native-calendars';
 
 import { faStar, faIdCard, faUserCircle} from '@fortawesome/free-solid-svg-icons'
+<<<<<<< Updated upstream
 import NotificationMowingView from './NotificationMowingView.js'
+=======
+import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view'
+>>>>>>> Stashed changes
 
 export default class NotificationsScreen extends Component {
 
@@ -28,8 +32,11 @@ export default class NotificationsScreen extends Component {
     }
 
     async componentDidMount() {
-        await this.load("currentUser")
-
+        
+        const { navigation } = this.props;
+        this.focusListener = navigation.addListener("didFocus", () => {
+            this.load("currentUser")
+        });
 
 
     }
@@ -64,7 +71,7 @@ export default class NotificationsScreen extends Component {
             console.log(JSON.stringify(this.state.listings))
 
         } catch (err) {
-            alert("error")
+            alert(err)
             console.log("error: " + err + "; server: " + server + "; json: " + body)
         }
                 
@@ -151,6 +158,8 @@ export default class NotificationsScreen extends Component {
                     let price = parseInt(post.jobSpecs.price, 10)
                     /*m.push(
                         <TouchableOpacity activeOpacity={0.7} key={post._id} onPress={() => this.props.navigation.navigate('Post', {post: post})}>
+                    m.push(
+                        <TouchableOpacity activeOpacity={0.7} key={post._id} onPress={() => this.props.navigation.navigate('View', {post: post})}>
                             <View style={{padding: 10, flex: 1, flexDirection: "row", alignItems: 'stretch', justifyContent: 'space-between', borderBottomColor: '#495867', borderBottomWidth: StyleSheet.hairlineWidth}}>
                                 <View style={{width: width*0.2, alignItems: "center"}}>
                                     <Image 

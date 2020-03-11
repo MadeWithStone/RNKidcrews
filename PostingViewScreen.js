@@ -8,6 +8,7 @@ import { FontAwesomeIcon } from '@fortawesome/react-native-fontawesome'
 import {Calendar, CalendarList, Agenda} from 'react-native-calendars';
 
 import { faStar, faIdCard, faUserCircle} from '@fortawesome/free-solid-svg-icons'
+import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view'
 
 export default class PostingViewScreen extends Component {
 
@@ -82,9 +83,14 @@ export default class PostingViewScreen extends Component {
     }
 
     hire() {
-        this.setState({
-            hiring: true
-        })
+        if (this.state.post.user._id == this.state.user._id) {
+            alert("You cant hire yourself.")
+        } else {
+            this.setState({
+                hiring: true
+            })
+        }
+        
         
     }
 
@@ -322,7 +328,7 @@ export default class PostingViewScreen extends Component {
                 <View style={styles.modalBackground}>
                 
                     <View style={styles.activityIndicatorWrapper}>
-                    <ScrollView showsVerticalScrollIndicator={false}>
+                    <KeyboardAwareScrollView showsVerticalScrollIndicator={false}>
                         <Text style={styles.title}>{this.state.text}</Text>
                     <ActivityIndicator
                         style={styles.acrivityIndicator}
@@ -385,7 +391,7 @@ export default class PostingViewScreen extends Component {
                         this.setState({hiring: false})
                     }}/>
                     <Button titleStyle={{color: "#2089dc"}} buttonStyle={{backgroundColor: "#fff"}} title="Cancel" onPress={() => this.setState({hiring: false})}/>
-                    </ScrollView>
+                    </KeyboardAwareScrollView>
                     </View>
                     
                     

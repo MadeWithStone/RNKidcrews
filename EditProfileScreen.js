@@ -75,6 +75,9 @@ export default class EditProfileScreen extends Component {
         this.load('currentUser')
         console.log('linked: ' + this.state.linkedPeople)
         console.log('image: ' + this.state.user.profileImage)
+        this.focusListener = navigation.addListener("didFocus", () => {
+            this.load('currentUser')
+        });
         //this.getUserData()
     }
 

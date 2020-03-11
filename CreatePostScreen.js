@@ -8,6 +8,7 @@ import { FontAwesomeIcon } from '@fortawesome/react-native-fontawesome'
 import ImagePicker from 'react-native-image-picker';
 import {Calendar, CalendarList, Agenda} from 'react-native-calendars';
 import Loader from './loader'
+import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view'
 
 
 export default class CreatePostScreen extends Component {

@@ -4,6 +4,7 @@ import { Button } from 'react-native-elements'
 import { createStackNavigator, createAppContainer } from "react-navigation";
 import AsyncStorage from '@react-native-community/async-storage'
 import Config from './config'
+import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view'
 
 export default class SignInScreen extends Component {
 
@@ -103,7 +104,7 @@ export default class SignInScreen extends Component {
         const name = navigation.getParam('name', 'NO-NAME')
         const otherParam = navigation.getParam('otherParam', 'some default value')
         return (
-            <ScrollView>
+            <KeyboardAwareScrollView>
                 <View style={styles.container}>
                     <TextInput
                         style={styles.input}
@@ -113,6 +114,7 @@ export default class SignInScreen extends Component {
                         autoCompleteType={"email"}
                         textContentType={"emailAddress"}
                         autoCapitalize='none'
+                        placeholderTextColor="#8595a6"
                     />
 
                     <TextInput
@@ -122,6 +124,7 @@ export default class SignInScreen extends Component {
                         value={this.state.pass}
                         textContentType='password'
                         secureTextEntry={true}
+                        placeholderTextColor="#8595a6"
                     />
 
                     <Button
@@ -131,7 +134,7 @@ export default class SignInScreen extends Component {
                     />
 
                 </View>
-            </ScrollView>
+            </KeyboardAwareScrollView>
         );
     }
 }

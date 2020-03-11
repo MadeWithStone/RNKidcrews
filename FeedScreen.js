@@ -1,5 +1,5 @@
 import React, { Component } from 'react'
-import { Alert, View, Text, TextInput, StyleSheet, ScrollView, Dimensions, Image, TouchableOpacity, Modal, ActivityIndicator, Picker } from 'react-native'
+import { Alert, View, Text, TextInput, StyleSheet, ScrollView, Dimensions, Image, TouchableOpacity, Modal, ActivityIndicator, Picker, KeyboardAvoidingView } from 'react-native'
 import { createStackNavigator, createAppContainer, createBottomTabNavigator } from "react-navigation";
 import AsyncStorage from '@react-native-community/async-storage'
 import Config from './config'
@@ -18,6 +18,7 @@ import { ConsoleLogger } from '@aws-amplify/core';
 import NotificationsScreen from './NotificationsScreen';
 import NotificationsViewScreen from './NotificationsPostScreen';
 import Job from './Job.js'
+import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view'
 
 class FeedScreen extends Component {
 
@@ -154,6 +155,12 @@ class FeedScreen extends Component {
         await this.load("currentUser")
 
         this.downloadPosts()
+        const { navigation } = this.props;
+        this.focusListener = navigation.addListener("didFocus", () => {
+            this.downloadPosts()
+            
+            
+        });
     }
 
     async loadFilters() {
@@ -190,6 +197,8 @@ class FeedScreen extends Component {
     async downloadPosts() {    
         console.log("setting up server")
         await this.loadFilters()
+        
+        
 
         let server = Config.server + "/jobs/get"
         let body = JSON.stringify(
@@ -218,7 +227,7 @@ class FeedScreen extends Component {
             console.log(JSON.stringify(this.state.listings))
 
         } catch (err) {
-            alert("error")
+            alert(err)
             console.log("error: " + err + "; server: " + server + "; json: " + body)
         }
                 
@@ -280,7 +289,7 @@ class FeedScreen extends Component {
         
         let sort = <this.changeSort />
         return (
-            <View>
+            <KeyboardAvoidingView>
             <Modal
             transparent={true}
             animationType={'none'}
@@ -289,7 +298,8 @@ class FeedScreen extends Component {
                 <View style={styles.modalBackground}>
                 
                     <View style={styles.activityIndicatorWrapper}>
-                    <ScrollView showsVerticalScrollIndicator={false}>
+                    <KeyboardAwareScrollView showsVerticalScrollIndicator={false}>
+                    <View>
                     <ActivityIndicator
                         style={styles.acrivityIndicator}
                         animating={this.state.loading} />
@@ -358,7 +368,8 @@ class FeedScreen extends Component {
                         this.setState({filtering: false})
                     }}/>
                     <Button titleStyle={{color: "#2089dc"}} buttonStyle={{backgroundColor: "#fff"}} title="Cancel" onPress={() => this.setState({filtering: false})}/>
-                    </ScrollView>
+                    </View>
+                    </KeyboardAwareScrollView>
                     </View>
                     
                     
@@ -369,7 +380,7 @@ class FeedScreen extends Component {
                 {listings}
                 
             </ScrollView>
-            </View>
+            </KeyboardAvoidingView>
         )
     }
 }
@@ -381,18 +392,18 @@ const styles = StyleSheet.create({
         justifyContent: 'space-around',
         backgroundColor: '#00000040',
         paddingBottom: 100,
-        paddingTop: 100
+        paddingTop: 100,
     },
     activityIndicatorWrapper: {
         backgroundColor: '#FFFFFF',
         //height: 900,
-        width: 300,
+        width: 100+'%',
         borderRadius: 10,
         display: 'flex',
         alignItems: 'center',
-        justifyContent: 'space-around',
-        paddingLeft: 20,
-        paddingRight: 20, 
+        //justifyContent: 'space-around',
+        paddingLeft: 10,
+        paddingRight: 10, 
     },
     acrivityIndicator: {
         height: 50,

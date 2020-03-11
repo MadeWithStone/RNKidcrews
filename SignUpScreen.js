@@ -4,6 +4,7 @@ import { Button } from 'react-native-elements'
 import { createStackNavigator, createAppContainer } from "react-navigation";
 import AsyncStorage from '@react-native-community/async-storage'
 import Config from './config'
+import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view'
 
 export default class SignUpScreen extends Component {
     static navigationOptions = {
@@ -50,7 +51,9 @@ export default class SignUpScreen extends Component {
                 .then(async (responseStatus) => {
                     if (responseStatus == 200) {
                         alert('You must verify your email through the email sent to you to continue.')
-                    } else {
+                    } else if (responseStatus == 209) {
+                        alert("Account already created with this email. Please sign in instead.")
+                    }else {
                         console.log("status: " + responseStatus)
                     }
 
@@ -67,7 +70,7 @@ export default class SignUpScreen extends Component {
         const name = navigation.getParam('name', 'NO-NAME')
         const otherParam = navigation.getParam('otherParam', 'some default value')
         return (
-            <ScrollView>
+            <KeyboardAwareScrollView>
                 <View style={styles.container}>
                     <TextInput
                         style={styles.input}
@@ -77,6 +80,7 @@ export default class SignUpScreen extends Component {
                         autoCompleteType="name"
                         textContentType="givenName"
                         autoCapitalize='words'
+                        placeholderTextColor="#8595a6"
                     />
                     <TextInput
                         style={styles.input}
@@ -86,6 +90,7 @@ export default class SignUpScreen extends Component {
                         autoCompleteType="name"
                         textContentType="familyName"
                         autoCapitalize='words'
+                        placeholderTextColor="#8595a6"
                     />
                     <TextInput
                         style={styles.input}
@@ -95,6 +100,7 @@ export default class SignUpScreen extends Component {
                         autoCompleteType="postal-code"
                         textContentType="postalCode"
                         autoCapitalize='none'
+                        placeholderTextColor="#8595a6"
                     />
                     <TextInput
                         style={styles.input}
@@ -104,6 +110,7 @@ export default class SignUpScreen extends Component {
                         autoCompleteType="email"
                         textContentType="emailAddress"
                         autoCapitalize='none'
+                        placeholderTextColor="#8595a6"
                     />
 
                     <TextInput
@@ -113,6 +120,7 @@ export default class SignUpScreen extends Component {
                         value={this.state.pass}
                         textContentType='password'
                         secureTextEntry={true}
+                        placeholderTextColor="#8595a6"
                     />
 
                     <Button
@@ -122,7 +130,7 @@ export default class SignUpScreen extends Component {
                     />
 
                 </View>
-            </ScrollView>
+            </KeyboardAwareScrollView>
         );
     }
 }
