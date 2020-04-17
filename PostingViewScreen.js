@@ -9,6 +9,8 @@ import {Calendar, CalendarList, Agenda} from 'react-native-calendars';
 
 import { faStar, faIdCard, faUserCircle} from '@fortawesome/free-solid-svg-icons'
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view'
+import SegmentedControlTab from "react-native-segmented-control-tab";
+import { getDistance, getPreciseDistance } from 'geolib';
 
 export default class PostingViewScreen extends Component {
 
@@ -32,7 +34,8 @@ export default class PostingViewScreen extends Component {
             loading: false,
             img: {uri: ""},
             user: {},
-            multi: 1
+            multi: 1,
+            yardSize: 1,
         }
         this.hire = this.hire.bind(this)
         this.changeSort = this.changeSort.bind(this)
@@ -40,10 +43,19 @@ export default class PostingViewScreen extends Component {
 
     async componentDidMount() {
         await this.load("currentUser")
-        let post = await this.props.navigation.getParam('post', {})
+        var post = await this.props.navigation.getParam('post', {})
+        post = post.data()
+        console.log("passed post: "+post)
         let oMark = {};
-        for (d in post.jobSpecs.available){
-            oMark[post.jobSpecs.available[d]] = {customStyles: {
+        let lat = { latitude: post.location.lat, longitude: post.location.lng}
+       let long = { latitude: this.state.user.location.lat, longitude: this.state.user.location.lng}
+        let distance = getDistance(lat, long)
+        distance = distance / 1609
+        post.distance = distance.toFixed(2)
+        let specs = post.jobSpecs
+        console.log("specs: "+JSON.stringify(specs))
+        for (d in specs.available){
+            oMark[specs.available[d]] = {customStyles: {
                 container: {
                     backgroundColor: '#fff'
                 }, 
@@ -54,10 +66,10 @@ export default class PostingViewScreen extends Component {
         }
         this.setState({
             post: post,
-            img: {uri: post.jobSpecs.img},
+            img: {uri: specs.img},
             marked: oMark,
         })
-        console.log("post: "+JSON.stringify(this.state.post.jobSpecs.img))
+        console.log("post: "+JSON.stringify(specs.img))
         /*this.setState({
             text: "Hire "+this.state.post.user.username
         })*/
@@ -176,6 +188,11 @@ export default class PostingViewScreen extends Component {
             
                 return  (
                     <View style={{flex: 1, flexDirection: 'row'}}>
+                        <SegmentedControlTab
+                            values={["Small ( < 1000 sqft)", "Medium ( < 3000 sqft", "Large ( > 3000 sqft)"]}
+                            selectedIndex={this.state.yardSize}
+                            onTabPress={(index) => this.setState({yardSize: index})}
+                        />
                         <Text style={{paddingRight: 3}}>Area: (in square feet) </Text> 
                         <TextInput 
                             style={{flex: 0.8}}

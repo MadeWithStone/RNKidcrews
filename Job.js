@@ -1,4 +1,5 @@
 export default class Job {
+
     constructor(props) {
         this.props = props
     }

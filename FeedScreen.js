@@ -1,5 +1,5 @@
 import React, { Component } from 'react'
-import { Alert, View, Text, TextInput, StyleSheet, ScrollView, Dimensions, Image, TouchableOpacity, Modal, ActivityIndicator, Picker, KeyboardAvoidingView } from 'react-native'
+import { Alert, View, Text, TextInput, StyleSheet, ScrollView, Dimensions, Image, TouchableOpacity, Modal, ActivityIndicator, Picker, KeyboardAvoidingView, Switch  } from 'react-native'
 import { createStackNavigator, createAppContainer, createBottomTabNavigator } from "react-navigation";
 import AsyncStorage from '@react-native-community/async-storage'
 import Config from './config'
@@ -8,15 +8,17 @@ import EditProfileScreen from './EditProfileScreen'
 import PostViewScreen from './PostingViewScreen'
 import CreatePostScreen from './CreatePostScreen'
 import GooglePlacesInput from './GoogleAddress'
-import { Button } from 'react-native-elements'
+import { Button, CheckBox } from 'react-native-elements'
 import { FontAwesomeIcon } from '@fortawesome/react-native-fontawesome'
 import {Calendar, CalendarList, Agenda} from 'react-native-calendars';
 
-import { faStar, faIdCard, faUserCircle, faBell} from '@fortawesome/free-solid-svg-icons'
+import { faStar, faIdCard, faUserCircle, faBell, faCircle as fasCircle} from '@fortawesome/free-solid-svg-icons'
+import {faCircle as farCircle } from '@fortawesome/free-regular-svg-icons'
 import Filter from './FilterModel'
 import { ConsoleLogger } from '@aws-amplify/core';
 import NotificationsScreen from './NotificationsScreen';
 import NotificationsViewScreen from './NotificationsPostScreen';
+import { getDistance, getPreciseDistance } from 'geolib';
 import Job from './Job.js'
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view'
 
@@ -54,12 +56,15 @@ class FeedScreen extends Component {
             multi: 1,
             jobSort: null,
             area: null,
-            filters: {}
+            filters: {},
+            switch: true,
+            maxDistance: null
         }
         this.downloadPosts = this.downloadPosts.bind(this)
         this.startFiltering = this.startFiltering.bind(this)
         this.changeSort = this.changeSort.bind(this)
         this.loadFilters = this.loadFilters.bind(this)
+        this.switcher = this.switcher.bind(this)
     }
 
     async load(key) {
@@ -137,6 +142,8 @@ class FeedScreen extends Component {
         data['job'] = this.state.job
         data['marked'] = this.state.marked
         data['hours'] = this.state.hours
+        data['switch'] = this.state.switch
+        data['maxDistance'] = this.state.maxDistance
         try {
             await AsyncStorage.setItem(key, JSON.stringify(data))
         } catch (error) {
@@ -147,6 +154,10 @@ class FeedScreen extends Component {
     startFiltering() {
         this.setState({filtering: true})
         
+    }
+    switcher() {
+        let s = !this.state.switch
+        this.setState({switch: s})
     }
 
     async componentDidMount() {
@@ -183,9 +194,13 @@ class FeedScreen extends Component {
                     data: {
                         dates: dates,
                         dSent: Object.keys(marked),
-                        job: data.job
+                        job: data.job,
+                        switch: data.switch,
+                        maxDistance: data.maxDistance
                     }
-                }
+                },
+                switch: data.switch,
+                maxDistance: data.maxDistance
             })
             return "true"
         } catch (error) {
@@ -197,9 +212,7 @@ class FeedScreen extends Component {
     async downloadPosts() {    
         console.log("setting up server")
         await this.loadFilters()
-        
-        
-
+        var jobsList = []
         let server = Config.server + "/jobs/get"
         let body = JSON.stringify(
             this.state.filters
@@ -218,11 +231,29 @@ class FeedScreen extends Component {
             let data = await resp.json()
             for (i in data) {
                 let newJob =  new Job()
+                let lat = { latitude: data[i].location.lat, longitude: data[i].location.lng}
+                let long = { latitude: this.state.user.location.lat, longitude: this.state.user.location.lng}
+                console.log("lat: "+JSON.stringify(lat), "; long: "+JSON.stringify(long))
+                let distance = getDistance(lat, long)
+                distance = distance / 1609
+                data[i].distance = distance.toFixed(2)
                 newJob.props = data[i]
                 console.log("Job Class: "+newJob.data())
+                var maxDistance = this.state.filters.data.maxDistance
+                if (maxDistance == '') {
+                    maxDistance = 10
+                    console.log("max distance is null")
+                }
+                console.log("max distance is: "+maxDistance)
+                if (data[i].distance < maxDistance) {
+                    jobsList.push(newJob)
+                }
+            }
+            if (this.state.filters.switch) {
+                jobsList = jobsList.sort(this.compare)
             }
             this.setState({
-                listings: data
+                listings: jobsList
             })
             console.log(JSON.stringify(this.state.listings))
 
@@ -232,6 +263,20 @@ class FeedScreen extends Component {
         }
                 
     }
+
+    compare( a, b ) {
+        if ( a.distance > b.distance ){
+          console.log("-1")
+          return -1;
+        }
+        if ( a.distance < b.distance ){
+          console.log("1")
+          return 1;
+        }
+        return 0;
+      }
+
+    
 
     render() {
         let width = this.state.width
@@ -245,32 +290,32 @@ class FeedScreen extends Component {
         l.map((post) => {
             console.log('post')
             var cpr
-            if (post.cpr) {
+            if (post.data().cpr) {
                 cpr = 'CPR'
             }
-            let p = parseInt(post.jobSpecs.price, 10)
+            let p = parseInt(post.data().jobSpecs.price, 10)
             const price = p * parseInt(this.state.multi, 10)
-            console.log("profile image: "+post.user.profileImage)
+            console.log("profile image: "+JSON.stringify(post))
             listings.push(
-            <TouchableOpacity activeOpacity={0.7} key={post._id} onPress={() => this.props.navigation.navigate('Post', {post: post})}>
+            <TouchableOpacity activeOpacity={0.7} key={post.data()._id} onPress={() => this.props.navigation.navigate('Post', {post: post})}>
                 <View style={{padding: 10, flex: 1, flexDirection: "row", alignItems: 'stretch', justifyContent: 'space-between', borderBottomColor: '#495867', borderBottomWidth: StyleSheet.hairlineWidth}}>
                         <View style={{width: width*0.2, alignItems: "center"}}>
                             <Image 
-                                source={{uri: post.user.profileImage,
+                                source={{uri: post.data().user.profileImage,
                                         cache: 'reload'}} 
                                 style={{width: width*0.2, height: width*0.2, borderRadius: width*0.3*0.5, marginRight: 5}}
                             />
                             <View style={{flexDirection: 'row', justifyContent: 'center'}}>
                                 <FontAwesomeIcon style={{color: '#fe5f55', marginRight: 3 }} size={25} icon={faStar} />
-                                <Text style={{fontSize: 25, color: '#fe5f55'}}>{post.rating}</Text>
+                                <Text style={{fontSize: 25, color: '#fe5f55'}}>{post.data().rating}</Text>
                             </View>
                         </View>
                         <View style={{flex: 1.5, flexDirection: "column", marginLeft: 5, marginRight: 5, alignSelf: 'stretch'}}>
-                            <Text style={{fontSize: 22, color: '#fe5f55'}}>{post.jobSpecs.title}</Text>
-                            <Text style={{fontSize: 20, color: '#fe5f55'}}>{post.user.username}</Text>
-                            <Text style={{fontSize: 17, color: '#495867'}}>{post.user.firstName}</Text>
-                            <Text style={{fontSize: 12, color: '#495867'}}>{post.distance} mi</Text>
-                            <Text style={{fontSize: 12, color: '#495867'}}>{post.jobSpecs.bio}</Text>
+                            <Text style={{fontSize: 22, color: '#fe5f55'}}>{post.data().jobSpecs.title}</Text>
+                            <Text style={{fontSize: 20, color: '#fe5f55'}}>{post.data().user.username}</Text>
+                            <Text style={{fontSize: 17, color: '#495867'}}>{post.data().user.firstName}</Text>
+                            <Text style={{fontSize: 12, color: '#495867'}}>{post.data().distance} mi</Text>
+                            <Text style={{fontSize: 12, color: '#495867'}}>{post.data().jobSpecs.bio}</Text>
                             
                         </View>
                         
@@ -319,6 +364,25 @@ class FeedScreen extends Component {
                     <Picker.Item label="Babysitting" value="M" />
                     <Picker.Item label="Mowing" value="BS" />
                     </ Picker>
+                    <View style={{flexDirection: "row", justifyContent: 'space-between', alignItems: 'center'}}>
+                        <Text>Sort By Distance</Text>
+                        <Switch
+                            trackColor={{ false: "#495867", true: "#fe5f55"}}
+                            thumbColor={"#fff"}
+                            ios_backgroundColor="#495867"
+                            onValueChange={this.switcher}
+                            value={this.state.switch}
+                            stlye={{alignSelf: 'center'}}
+                        />
+                    </View>
+                    <View style={{flexDirection: "row", justifyContent: 'space-between', paddingTop: 10, paddingBottom: 10}}>
+                        <Text>Max Distance: (Miles) </Text> 
+                        <TextInput 
+                        placeholder="miles"
+                        style={{textAlign: 'right'}}
+                        value={this.state.maxDistance}
+                        onChangeText={(maxDistance) => this.setState({maxDistance: maxDistance})}/>
+                    </View>
                     <View>
                         
                         <Calendar
@@ -359,6 +423,7 @@ class FeedScreen extends Component {
                         }}
                         
                     </View>
+                    
                     <View>
                         {sort}
                     </View>
