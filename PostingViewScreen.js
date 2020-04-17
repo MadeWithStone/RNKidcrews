@@ -158,9 +158,9 @@ export default class PostingViewScreen extends Component {
     }
 
     changeSort() {
-        
+        console.log('change sorting')
         if (this.state.post.jobSpecs.title == "Babysitting") {
-            
+            console.log("babysitting")
                 return (
                     <View style={{flex: 1, flexDirection: 'row', alignItems: "center"}}>
                         <Text style={{flex: 0.2}}>Hours: </Text> 
@@ -185,25 +185,17 @@ export default class PostingViewScreen extends Component {
 
             
         } else if (this.state.post.jobSpecs.title == "Mowing") {
-            
+            console.log("mowing")
                 return  (
-                    <View style={{flex: 1, flexDirection: 'row'}}>
+                    <View>
+                        <Text style={{textAlign: 'center', padding: 10}}>Yard Size</Text>
                         <SegmentedControlTab
-                            values={["Small ( < 1000 sqft)", "Medium ( < 3000 sqft", "Large ( > 3000 sqft)"]}
+                            values={["Small", "Medium", "Large"]}
+                            activeTabStyle={{backgroundColor: '#fe5f55', borderColor: '#fe5f55'}}
+                            tabStyle={{borderColor: '#fe5f55'}}
+                            tabTextStyle={{color: '#fe5f55'}}
                             selectedIndex={this.state.yardSize}
                             onTabPress={(index) => this.setState({yardSize: index})}
-                        />
-                        <Text style={{paddingRight: 3}}>Area: (in square feet) </Text> 
-                        <TextInput 
-                            style={{flex: 0.8}}
-                            placeholder="Square Footage of Yard"
-                            multiline={false}
-                            onChangeText={(multi) => (this.setState({multi}))}
-
-                            autoCompleteType="cc-number"
-                            textContentType="telephoneNumber"
-                            autoCapitalize='none'
-                            keyboardType={'numeric'}
                         />
                     </View>
                 )
@@ -211,6 +203,7 @@ export default class PostingViewScreen extends Component {
             
             
         } else {
+            console.log("null")
             return null
         }
     }
@@ -319,7 +312,7 @@ export default class PostingViewScreen extends Component {
                             <Text>{this.state.post.user.username}</Text>
                             <Text>{this.state.post.user.firstName}</Text>
                             <Text>{this.state.post.user.zip}</Text>
-                            <Text>{this.state.post.user.distance} mi</Text>
+                            <Text>{this.state.post.distance} mi</Text>
                             <Text style={{fontSize: 15, color: '#495867'}}>{post.jobSpecs.bio}</Text>
                             
                         </View>

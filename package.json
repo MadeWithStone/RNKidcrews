@@ -36,6 +36,7 @@
     "react-native-vector-icons": "^6.6.0",
     "react-native-view-editor": "^1.1.0",
     "react-navigation": "^3.13.0",
+    "sendbird": "^3.0.121",
     "yarn": "^1.22.0"
   },
   "devDependencies": {

@@ -8,11 +8,8 @@ import { FontAwesomeIcon } from '@fortawesome/react-native-fontawesome'
 import {Calendar, CalendarList, Agenda} from 'react-native-calendars';
 
 import { faStar, faIdCard, faUserCircle} from '@fortawesome/free-solid-svg-icons'
-<<<<<<< Updated upstream
 import NotificationMowingView from './NotificationMowingView.js'
-=======
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view'
->>>>>>> Stashed changes
 
 export default class NotificationsScreen extends Component {
 

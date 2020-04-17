@@ -200,7 +200,7 @@ class FeedScreen extends Component {
                     }
                 },
                 switch: data.switch,
-                maxDistance: data.maxDistance
+                maxDistance: data.maxDistance,
             })
             return "true"
         } catch (error) {
@@ -249,7 +249,9 @@ class FeedScreen extends Component {
                     jobsList.push(newJob)
                 }
             }
-            if (this.state.filters.switch) {
+            console.log("filtering: "+this.state.filters.data.switch)
+            if (this.state.filters.data.switch) {
+                console.log("filtering")
                 jobsList = jobsList.sort(this.compare)
             }
             this.setState({
@@ -265,13 +267,13 @@ class FeedScreen extends Component {
     }
 
     compare( a, b ) {
-        if ( a.distance > b.distance ){
+        if ( a.data().distance > b.data().distance ){
           console.log("-1")
-          return -1;
-        }
-        if ( a.distance < b.distance ){
-          console.log("1")
           return 1;
+        }
+        if ( a.data().distance < b.data().distance ){
+          console.log("1")
+          return -1;
         }
         return 0;
       }
