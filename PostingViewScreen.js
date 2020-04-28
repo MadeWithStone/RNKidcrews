@@ -39,6 +39,7 @@ export default class PostingViewScreen extends Component {
         }
         this.hire = this.hire.bind(this)
         this.changeSort = this.changeSort.bind(this)
+        this.chat = this.chat.bind(this)
     }
 
     async componentDidMount() {
@@ -155,6 +156,24 @@ export default class PostingViewScreen extends Component {
                 alert("error")
                 console.log("error: " + error + "; server: " + server + "; json: " + body)
             })
+    }
+
+    chat() {
+        fetch(Config.server + "/jobs/message", {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'authorization': 'Token '+this.state.user.token
+            },
+            body: JSON.stringify({
+                message: {
+                    employer: this.state.user._id,
+                    employee: this.state.post.user._id,
+                    sender: this.state.user._id,
+                    message: "Hello World! 2"
+                }
+            })
+        })
     }
 
     changeSort() {
@@ -327,6 +346,8 @@ export default class PostingViewScreen extends Component {
                     <View style={{margin: 10}}>
                         <Text style={{alignSelf: "center", color: "#fe5f55", fontSize: 20}}>Available</Text>
                         <View style={{height: 10}} />
+                        <Button onPress={() => this.props.navigation.navigate('InitialMsg', {post: this.state.post})} title={"Send Message"} buttonStyle={Config.buttonStyle} />
+                        <View style={{height:10}} />
                         <Button onPress={this.hire} title={"Hire"} buttonStyle={Config.buttonStyle} />
                     </View>
                 </ScrollView>

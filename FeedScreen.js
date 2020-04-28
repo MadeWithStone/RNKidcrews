@@ -1,5 +1,5 @@
 import React, { Component } from 'react'
-import { Alert, View, Text, TextInput, StyleSheet, ScrollView, Dimensions, Image, TouchableOpacity, Modal, ActivityIndicator, Picker, KeyboardAvoidingView, Switch  } from 'react-native'
+import { Alert, View, Text, TextInput, StyleSheet, ScrollView, Dimensions, Image, TouchableOpacity, Modal, ActivityIndicator, Picker, KeyboardAvoidingView, Switch, RefreshControl  } from 'react-native'
 import { createStackNavigator, createAppContainer, createBottomTabNavigator } from "react-navigation";
 import AsyncStorage from '@react-native-community/async-storage'
 import Config from './config'
@@ -12,7 +12,7 @@ import { Button, CheckBox } from 'react-native-elements'
 import { FontAwesomeIcon } from '@fortawesome/react-native-fontawesome'
 import {Calendar, CalendarList, Agenda} from 'react-native-calendars';
 
-import { faStar, faIdCard, faUserCircle, faBell, faCircle as fasCircle} from '@fortawesome/free-solid-svg-icons'
+import { faStar, faIdCard, faUserCircle, faBell, faCircle as fasCircle, faComments} from '@fortawesome/free-solid-svg-icons'
 import {faCircle as farCircle } from '@fortawesome/free-regular-svg-icons'
 import Filter from './FilterModel'
 import { ConsoleLogger } from '@aws-amplify/core';
@@ -21,6 +21,9 @@ import NotificationsViewScreen from './NotificationsPostScreen';
 import { getDistance, getPreciseDistance } from 'geolib';
 import Job from './Job.js'
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view'
+import ChatScreen from './ChatScreen';
+import MessaginScreen from './MessaginScreen';
+import InitialMessageScreen from './InitialMessageScreen';
 
 class FeedScreen extends Component {
 
@@ -58,7 +61,8 @@ class FeedScreen extends Component {
             area: null,
             filters: {},
             switch: true,
-            maxDistance: null
+            maxDistance: null,
+            refreshing: false,
         }
         this.downloadPosts = this.downloadPosts.bind(this)
         this.startFiltering = this.startFiltering.bind(this)
@@ -210,6 +214,7 @@ class FeedScreen extends Component {
     }
 
     async downloadPosts() {    
+        this.setState({refreshing: true})
         console.log("setting up server")
         await this.loadFilters()
         var jobsList = []
@@ -263,6 +268,7 @@ class FeedScreen extends Component {
             alert(err)
             console.log("error: " + err + "; server: " + server + "; json: " + body)
         }
+        this.setState({refreshing: false})
                 
     }
 
@@ -443,7 +449,7 @@ class FeedScreen extends Component {
                 </View>
                 
             </Modal>
-            <ScrollView>
+            <ScrollView refreshControl={<RefreshControl refreshing={this.state.refreshing} onRefresh={this.downloadPosts} />}style={{height: 100+'%' }}>
                 {listings}
                 
             </ScrollView>
@@ -487,7 +493,8 @@ const styles = StyleSheet.create({
 const feed = createStackNavigator({
      Listings: FeedScreen,
      Post: PostViewScreen,
-     Create: CreatePostScreen
+     Create: CreatePostScreen,
+     InitialMsg: InitialMessageScreen,
 }, { defaultNavigationOptions: Config.navBarStyles })
 const profile = createStackNavigator({
     Profile: ProfileScreen,
@@ -500,11 +507,18 @@ const notifications = createStackNavigator({
     View: NotificationsViewScreen,
 }, { defaultNavigationOptions: Config.navBarStyles })
 
+const chats = createStackNavigator({
+    Chat: ChatScreen,
+    Messaging: MessaginScreen
+}, { defaultNavigationOptions: Config.navBarStyles})
+
 const TabNavigator = createBottomTabNavigator(
     {
         Listings: feed,
         Notifications: notifications,
-        Profile: profile
+        Messages: chats,
+        Profile: profile,
+        
     },
     {
       defaultNavigationOptions: ({ navigation }) => ({
@@ -519,6 +533,8 @@ const TabNavigator = createBottomTabNavigator(
             icon = <FontAwesomeIcon icon={faUserCircle} size={25} color={tintColor} />;
           } else if (routeName === 'Notifications') {
             icon = <FontAwesomeIcon icon={faBell} size={25} color={tintColor} />;
+          } else if (routeName == 'Messages') {
+            icon = <FontAwesomeIcon icon={faComments} size={25} color={tintColor} />
           }
   
           // You can return any component that you like here!
