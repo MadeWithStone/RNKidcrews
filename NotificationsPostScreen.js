@@ -297,20 +297,19 @@ export default class NotificationsViewScreen extends Component {
                             <Text>{this.state.post.user.username}</Text>
                             <Text>{this.state.post.user.firstName}</Text>
                             <Text>{this.state.post.user.zip}</Text>
-                            <Text>{this.state.post.user.distance} mi</Text>
+                            <Text>{this.state.post.distance} mi</Text>
                             <Text style={{fontSize: 15, color: '#495867'}}>{post.jobSpecs.bio}</Text>
                             
                         </View>
                         <View style={{flex: 0.85, alignItems: 'center', marginLeft: 5}}>
                             <Text adjustsFontSizeToFit={true} numberOfLines={1} style={{fontSize: 60, color: '#fe5f55'}}>${post.jobSpecs.price}</Text> 
-                            <Text style={{fontSize: 25, color: '#fe5f55'}}>per hour</Text>
+                            <Text style={{fontSize: 25, color: '#fe5f55'}}>for your lawn</Text>
                             <View style={{height: 10}}></View>
                             <Text style={{fontSize: 25, color: '#fe5f55'}}>{cpr}</Text>
                         </View>
                     </View>
                     
                     <View style={{margin: 10}}>
-                        <Text style={{alignSelf: "center", color: "#fe5f55", fontSize: 20}}>Available</Text>
                         <Calendar
                             minDate={date}
                             
@@ -327,6 +326,8 @@ export default class NotificationsViewScreen extends Component {
                             //disabledByDefault={true}
                         />
                         <View style={{height: 10}} />
+
+                        <Text style={{alignSelf: "center", color: "#fe5f55", fontSize: 20}}>Currently Hired by You</Text>
                         <Button onPress={this.hire} title={"Hire"} buttonStyle={Config.buttonStyle} />
                     </View>
                 </ScrollView>

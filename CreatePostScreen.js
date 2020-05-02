@@ -34,7 +34,9 @@ export default class CreatePostScreen extends Component {
             width: Math.round(Dimensions.get('window').width),
             height: 0,
             bio: "",
-            price: 0,
+            sPrice: 0,
+            mPrice: 0,
+            lPrice: 0,
             marked: {},
             priceTitle: "Price: (per hour)",
             user: {},
@@ -144,7 +146,7 @@ export default class CreatePostScreen extends Component {
                         title: job,
                         bio: this.state.bio,
                         cpr: this.state.cpr.value,
-                        price: parseFloat(this.state.price),
+                        price: [parseFloat(this.state.sPrice), parseFloat(this.state.mPrice), parseFloat(this.state.lPrice)],
                         available: arr,
                         img: data.url
                     }
@@ -284,7 +286,7 @@ export default class CreatePostScreen extends Component {
             <View>
             <Loader
             loading={this.state.loading} text={this.state.loadingText} />
-            <ScrollView style={styles.scroll}>
+            <KeyboardAwareScrollView style={styles.scroll}>
                 <Picker 
                     selectedValue={this.state.job}
                     style={{width: 100+'%'}}
@@ -321,13 +323,13 @@ export default class CreatePostScreen extends Component {
                     <Text style={styles.text}>{this.state.priceTitle}</Text>
                     <View style={{flex: 1, flexDirection: 'row', alighnItems: 'center'}}>
                         <Text style={styles.dollar}>
-                            $
+                            Small Yard: $
                         </Text>
                         <TextInput 
                             style={styles.input}
                             placeholder="price"
                             multiline={false}
-                            onChangeText={(price) => (this.setState({price}))}
+                            onChangeText={(sPrice) => (this.setState({sPrice}))}
 
                             autoCompleteType="cc-number"
                             textContentType="telephoneNumber"
@@ -335,6 +337,40 @@ export default class CreatePostScreen extends Component {
                             keyboardType={'numeric'}
                         />
                     </View>
+                    <View style={{flex: 1, flexDirection: 'row', alighnItems: 'center'}}>
+                        <Text style={styles.dollar}>
+                            Medium Yard: $
+                        </Text>
+                        <TextInput 
+                            style={styles.input}
+                            placeholder="price"
+                            multiline={false}
+                            onChangeText={(mPrice) => (this.setState({mPrice}))}
+
+                            autoCompleteType="cc-number"
+                            textContentType="telephoneNumber"
+                            autoCapitalize='none'
+                            keyboardType={'numeric'}
+                        />
+                    </View>
+                    
+                    <View style={{flex: 1, flexDirection: 'row', alighnItems: 'center'}}>
+                        <Text style={styles.dollar}>
+                            Large Yard: $
+                        </Text>
+                        <TextInput 
+                            style={styles.input}
+                            placeholder="price"
+                            multiline={false}
+                            onChangeText={(lPrice) => (this.setState({lPrice}))}
+
+                            autoCompleteType="cc-number"
+                            textContentType="telephoneNumber"
+                            autoCapitalize='none'
+                            keyboardType={'numeric'}
+                        />
+                    </View>
+                    
                     
                  </View>
                  <View style={styles.view}>
@@ -381,7 +417,7 @@ export default class CreatePostScreen extends Component {
                     />
                  </View>
                  <View style={{height: 20}}/>
-            </ScrollView>
+            </KeyboardAwareScrollView>
             </View>
         )
     }

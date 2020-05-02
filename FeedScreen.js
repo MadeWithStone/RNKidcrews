@@ -24,6 +24,7 @@ import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view
 import ChatScreen from './ChatScreen';
 import MessaginScreen from './MessaginScreen';
 import InitialMessageScreen from './InitialMessageScreen';
+import SegmentedControlTab from "react-native-segmented-control-tab";
 
 class FeedScreen extends Component {
 
@@ -63,6 +64,7 @@ class FeedScreen extends Component {
             switch: true,
             maxDistance: null,
             refreshing: false,
+            yardSize: 1,
         }
         this.downloadPosts = this.downloadPosts.bind(this)
         this.startFiltering = this.startFiltering.bind(this)
@@ -120,18 +122,15 @@ class FeedScreen extends Component {
         } else if (this.state.job == "BS") {
             
                 return  (
-                    <View style={{flex: 1, flexDirection: 'row'}}>
-                        <Text style={{paddingRight: 3}}>Area: (in square feet) </Text> 
-                        <TextInput 
-                            style={{flex: 0.8}}
-                            placeholder="price"
-                            multiline={false}
-                            onChangeText={(multi) => (this.setState({multi}))}
-
-                            autoCompleteType="cc-number"
-                            textContentType="telephoneNumber"
-                            autoCapitalize='none'
-                            keyboardType={'numeric'}
+                    <View style={{flex: 1, flexDirection: 'column'}}>
+                        <Text style={{paddingRight: 3}}>Yard Size</Text> 
+                        <SegmentedControlTab
+                            values={["Small", "Medium", "Large"]}
+                            activeTabStyle={{backgroundColor: '#fe5f55', borderColor: '#fe5f55'}}
+                            tabStyle={{borderColor: '#fe5f55'}}
+                            tabTextStyle={{color: '#fe5f55'}}
+                            selectedIndex={this.state.yardSize}
+                            onTabPress={(index) => this.setState({yardSize: index})}
                         />
                     </View>
                 )
@@ -148,6 +147,7 @@ class FeedScreen extends Component {
         data['hours'] = this.state.hours
         data['switch'] = this.state.switch
         data['maxDistance'] = this.state.maxDistance
+        data['yardSize'] = this.state.yardSize
         try {
             await AsyncStorage.setItem(key, JSON.stringify(data))
         } catch (error) {
@@ -200,9 +200,11 @@ class FeedScreen extends Component {
                         dSent: Object.keys(marked),
                         job: data.job,
                         switch: data.switch,
-                        maxDistance: data.maxDistance
+                        maxDistance: data.maxDistance,
+                        
                     }
                 },
+                yardSize: data.yardSize,
                 switch: data.switch,
                 maxDistance: data.maxDistance,
             })
@@ -302,7 +304,14 @@ class FeedScreen extends Component {
                 cpr = 'CPR'
             }
             let p = parseInt(post.data().jobSpecs.price, 10)
-            const price = p * parseInt(this.state.multi, 10)
+            var price = p * parseInt(this.state.multi, 10)
+            if (this.state.yardSize == 0) {
+                price = post.data().jobSpecs.price[0]
+            } else if (this.state.yardSize == 1) {
+                price = post.data().jobSpecs.price[1]
+            } if (this.state.yardSize == 2) {
+                price = post.data().jobSpecs.price[2]
+            }
             console.log("profile image: "+JSON.stringify(post))
             listings.push(
             <TouchableOpacity activeOpacity={0.7} key={post.data()._id} onPress={() => this.props.navigation.navigate('Post', {post: post})}>

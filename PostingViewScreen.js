@@ -124,7 +124,7 @@ export default class PostingViewScreen extends Component {
             worker: "false",
             employerId: this.state.user._id,
             dates: dates,
-            hours: this.state.hours
+            size: this.state.yardSize
         }
 
         let server = Config.server + "/jobs/requestHired"
@@ -147,7 +147,7 @@ export default class PostingViewScreen extends Component {
                     hiring: false
                 })
                 
-                
+                Alert.alert('Hire Request Sent')
                 
             })
             
@@ -313,6 +313,11 @@ export default class PostingViewScreen extends Component {
         let markedDates = JSON.parse(JSON.stringify(this.state.marked))
         console.log("pre marked: "+JSON.stringify(markedDates))
         let sort = <this.changeSort />
+        console.log("price set: "+JSON.stringify(post))
+        var price = [0,0,0]
+        if (post.jobSpecs.price != null) {
+            price = post.jobSpecs.price
+        }
         
         return(
             <View>
@@ -336,7 +341,9 @@ export default class PostingViewScreen extends Component {
                             
                         </View>
                         <View style={{flex: 0.85, alignItems: 'center', marginLeft: 5}}>
-                            <Text adjustsFontSizeToFit={true} numberOfLines={1} style={{fontSize: 60, color: '#fe5f55'}}>${post.jobSpecs.price}</Text> 
+                            <Text adjustsFontSizeToFit={true} numberOfLines={1} style={{fontSize: 60, color: '#fe5f55'}}>S ${price[0]}</Text> 
+                            <Text adjustsFontSizeToFit={true} numberOfLines={1} style={{fontSize: 60, color: '#fe5f55'}}>M ${price[1]}</Text> 
+                            <Text adjustsFontSizeToFit={true} numberOfLines={1} style={{fontSize: 60, color: '#fe5f55'}}>L ${price[2]}</Text> 
                             <Text style={{fontSize: 25, color: '#fe5f55'}}>per hour</Text>
                             <View style={{height: 10}}></View>
                             <Text style={{fontSize: 25, color: '#fe5f55'}}>{cpr}</Text>
