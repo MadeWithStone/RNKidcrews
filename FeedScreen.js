@@ -17,7 +17,7 @@ import {faCircle as farCircle } from '@fortawesome/free-regular-svg-icons'
 import Filter from './FilterModel'
 import { ConsoleLogger } from '@aws-amplify/core';
 import NotificationsScreen from './NotificationsScreen';
-import NotificationsViewScreen from './NotificationsPostScreen';
+import NotificationsViewScreen from './NotificationsViewScreen';
 import { getDistance, getPreciseDistance } from 'geolib';
 import Job from './Job.js'
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view'

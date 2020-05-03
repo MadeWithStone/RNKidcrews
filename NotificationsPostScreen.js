@@ -10,7 +10,7 @@ import {Calendar, CalendarList, Agenda} from 'react-native-calendars';
 import { faStar, faIdCard, faUserCircle} from '@fortawesome/free-solid-svg-icons'
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view'
 
-export default class NotificationsViewScreen extends Component {
+export default class NotificationsPostScreen extends Component {
 
     static navigationOptions = ({ navigation }) => {
         return {

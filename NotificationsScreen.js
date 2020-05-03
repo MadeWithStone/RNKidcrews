@@ -126,7 +126,7 @@ export default class NotificationsScreen extends Component {
             }
             notificationObjs.push(
                 <View key={notification._id} style={{height: 65, width: 100+'%', justifyContent: "center"}}>
-                    <TouchableOpacity onPress={() => this.props.navigation.navigate('Messaging', {message: message, user: this.state.user, title: user.firstName + " " + user.lastName})} style={{flexDirection: 'row'}}>
+                    <TouchableOpacity onPress={() => this.props.navigation.navigate('View', {chain: notification, user: this.state.user, title: user.firstName + " " + user.lastName})} style={{flexDirection: 'row'}}>
                         <Image source={{uri: user.profileImage,
                                         cache: 'reload'}} 
                                 style={{height: 30, width: 30, borderRadius: 15, marginLeft: 17.5, marginRight: 16}}/>
