@@ -65,6 +65,26 @@ export default class NotificationsViewScreen extends Component {
       }
 
     render() {
-        return(<Text>Hello World</Text>)
+        let chain = this.state.chain
+        var user = {}
+        if (chain.pos == 1) {
+            user = chain.worker
+        } else if (chain.pos == 0) {
+            user = chain.employer
+        }
+        return(
+        <KeyboardAwareScrollView>
+            <View  style={{ width: 100+'%', justifyContent: "center", paddingTop: 16}}>
+                <View style={{flexDirection: 'row'}}>
+                    <Image source={{uri: user.profileImage,
+                                    cache: 'reload'}} 
+                            style={{height: 80, width: 80, borderRadius: 40, marginLeft: 17.5, marginRight: 16}}/>
+                    <View>
+                        <Text>{user.firstName + " " + user.lastName}</Text>
+                    </View>
+                    
+                </View>
+            </View>
+        </KeyboardAwareScrollView>)
     }
 }
