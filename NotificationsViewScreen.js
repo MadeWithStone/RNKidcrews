@@ -67,20 +67,37 @@ export default class NotificationsViewScreen extends Component {
     render() {
         let chain = this.state.chain
         var user = {}
+        let width = this.state.width - 32
         if (chain.pos == 1) {
             user = chain.worker
         } else if (chain.pos == 0) {
             user = chain.employer
         }
+        console.log("chain: "+JSON.stringify(chain))
+        var yardSize = 'S'
+        if (chain.yardSize == 0){
+            yardSize = 'S'
+        } else if (chain.yardSize == 1) {
+            yardSize = 'M'
+        } else if (chain.yardSize == 2) {
+            yardSize = 'L'
+        }
+        //var price = chain.price[chain.yardSize]
+        console.log(chain.price)
         return(
         <KeyboardAwareScrollView>
             <View  style={{ width: 100+'%', justifyContent: "center", paddingTop: 16}}>
-                <View style={{flexDirection: 'row'}}>
+                <View style={{flexDirection: 'row', width: width - 96}}>
                     <Image source={{uri: user.profileImage,
                                     cache: 'reload'}} 
                             style={{height: 80, width: 80, borderRadius: 40, marginLeft: 17.5, marginRight: 16}}/>
-                    <View>
+                    <View style={{justifyContent: 'center'}}>
                         <Text>{user.firstName + " " + user.lastName}</Text>
+                        <Text style={{marginTop: 10}}>{user.address}</Text>
+                    </View>
+                    <View style={{justifyContent: 'center'}}>
+                        <Text>{yardSize} ${price}</Text>
+                        <Text style={{marginTop: 10}}>{user.address}</Text>
                     </View>
                     
                 </View>
