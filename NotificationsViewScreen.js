@@ -67,7 +67,7 @@ export default class NotificationsViewScreen extends Component {
     render() {
         let chain = this.state.chain
         var user = {}
-        let width = this.state.width - 32
+        let width = this.state.width - 17.5
         if (chain.pos == 1) {
             user = chain.worker
         } else if (chain.pos == 0) {
@@ -83,25 +83,82 @@ export default class NotificationsViewScreen extends Component {
             yardSize = 'L'
         }
         //var price = chain.price[chain.yardSize]
-        console.log(chain.price)
+        var price = 0
+        var rating = 4.5
+        console.log(JSON.stringify(chain))
         return(
-        <KeyboardAwareScrollView>
-            <View  style={{ width: 100+'%', justifyContent: "center", paddingTop: 16}}>
+        <KeyboardAwareScrollView style={{flex: 1}}>
+            <View  style={{paddingTop: 16, alignContent: "center"}}>
                 <View style={{flexDirection: 'row', width: width - 96}}>
                     <Image source={{uri: user.profileImage,
                                     cache: 'reload'}} 
                             style={{height: 80, width: 80, borderRadius: 40, marginLeft: 17.5, marginRight: 16}}/>
-                    <View style={{justifyContent: 'center'}}>
+                    <View style={{justifyContent: 'center', width: width - 136}}>
                         <Text>{user.firstName + " " + user.lastName}</Text>
                         <Text style={{marginTop: 10}}>{user.address}</Text>
                     </View>
-                    <View style={{justifyContent: 'center'}}>
+                    <View style={{justifyContent: 'center', marginRight: 17.5, width: 40}}>
                         <Text>{yardSize} ${price}</Text>
-                        <Text style={{marginTop: 10}}>{user.address}</Text>
+                        <View style={{flexDirection: 'row', justifyContent: 'center'}}>
+                            <FontAwesomeIcon style={{color: '#fe5f55', marginRight: 3 }} size={25} icon={faStar} />
+                            <Text style={{fontSize: 25, color: '#fe5f55'}}>{rating}</Text>
+                        </View>
                     </View>
                     
                 </View>
+                <Calendar
+                style={{alignSelf: 'center', width: 100+"%"}}
+                    onDayPress={(day) => {
+                        let d = markedDates
+                        if (d[day.dateString] != null && d[day.dateString].customStyles.text.color == '#fe5f55') {
+                            d[day.dateString] = {customStyles: {
+                                container: {
+                                    backgroundColor: '#fe5f55'
+                                }, 
+                                text: {
+                                    color: 'white'
+                                }
+                            }}
+                        } else if (d[day.dateString] != null && d[day.dateString].customStyles.text.color == 'white'){
+                            d[day.dateString] = {customStyles: {
+                                container: {
+                                    backgroundColor: '#fff'
+                                }, 
+                                text: {
+                                    color: '#fe5f55'
+                                }
+                            }}
+                        }
+                        
+                        this.setState({
+                            marked: d
+                        })
+                        console.log("dates: "+JSON.stringify(markedDates))
+                    }}
+
+                    theme={{
+                        backgroundColor: '#ffffff',
+                        calendarBackground: '#ffffff',
+                        todayTextColor: '#fe5f55',
+                        arrowColor: '#fe5f55'
+                    }}
+                    //showWeekNumbers={true}
+                    //markedDates={markedDates}
+                    markingType={'custom'}
+                    //disabledByDefault={true}
+                />
+                <View style={{ marginRight: 17.5, marginLeft: 17.5, flex: 1}}>
+                    <View style={{flexDirection: "row"}}>
+                        <Text style={{marginRight: 16, fontSize: 20, color: "#fe5f55"}}>25</Text>
+                        <Text numberOfLines={2}>Lisa would like to hire you to mow on May 25 for a small yard.</Text>
+                    </View>
+                    <View style={{flexDirection: "row", justifyContent: "space-around", width: width}}>
+                        <TouchableOpacity><Text>Accept</Text></TouchableOpacity>
+                        <TouchableOpacity><Text>Decline</Text></TouchableOpacity>
+                    </View>
+                </View>
             </View>
+
         </KeyboardAwareScrollView>)
     }
 }
