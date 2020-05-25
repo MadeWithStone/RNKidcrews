@@ -1,5 +1,6 @@
 import React, { Component } from 'react'
-import { Modal, Alert, View, Text, TextInput, StyleSheet, ScrollView, Dimensions, Image, TouchableOpacity, ActivityIndicator, Picker } from 'react-native'
+import { Modal, Alert, Text, TextInput, StyleSheet, ScrollView, Dimensions, Image, TouchableOpacity, ActivityIndicator, Picker } from 'react-native'
+import {View, Colors, Typography, Spacings} from 'react-native-ui-lib';
 import { createStackNavigator, createAppContainer, createBottomTabNavigator } from "react-navigation";
 import AsyncStorage from '@react-native-community/async-storage'
 import Config from './config'
@@ -85,19 +86,19 @@ export default class NotificationsViewScreen extends Component {
         //var price = chain.price[chain.yardSize]
         var price = 0
         var rating = 4.5
+        
         console.log(JSON.stringify(chain))
         return(
-        <KeyboardAwareScrollView style={{flex: 1}}>
-            <View  style={{paddingTop: 16, alignContent: "center"}}>
-                <View style={{flexDirection: 'row', width: width - 96}}>
-                    <Image source={{uri: user.profileImage,
-                                    cache: 'reload'}} 
-                            style={{height: 80, width: 80, borderRadius: 40, marginLeft: 17.5, marginRight: 16}}/>
-                    <View style={{justifyContent: 'center', width: width - 136}}>
+        <KeyboardAwareScrollView style={{flex: 1, width: 100+'%'}}>
+            <View style={{marginRight: 17.5, marginLeft: 17.5, marginTop: 16}}>
+                <View row style={{alignItems: "center"}}>
+                    <Image source={{uri: user.profileImage, cache: 'reload'}} 
+                    style={{height: 80, width: 80, borderRadius: 40, marginRight: 16}}/>
+                    <View style={{flex: 3}}>
                         <Text>{user.firstName + " " + user.lastName}</Text>
                         <Text style={{marginTop: 10}}>{user.address}</Text>
                     </View>
-                    <View style={{justifyContent: 'center', marginRight: 17.5, width: 40}}>
+                    <View flex right>
                         <Text>{yardSize} ${price}</Text>
                         <View style={{flexDirection: 'row', justifyContent: 'center'}}>
                             <FontAwesomeIcon style={{color: '#fe5f55', marginRight: 3 }} size={25} icon={faStar} />
@@ -107,54 +108,54 @@ export default class NotificationsViewScreen extends Component {
                     
                 </View>
                 <Calendar
-                style={{alignSelf: 'center', width: 100+"%"}}
-                    onDayPress={(day) => {
-                        let d = markedDates
-                        if (d[day.dateString] != null && d[day.dateString].customStyles.text.color == '#fe5f55') {
-                            d[day.dateString] = {customStyles: {
-                                container: {
-                                    backgroundColor: '#fe5f55'
-                                }, 
-                                text: {
-                                    color: 'white'
-                                }
-                            }}
-                        } else if (d[day.dateString] != null && d[day.dateString].customStyles.text.color == 'white'){
-                            d[day.dateString] = {customStyles: {
-                                container: {
-                                    backgroundColor: '#fff'
-                                }, 
-                                text: {
-                                    color: '#fe5f55'
-                                }
-                            }}
-                        }
-                        
-                        this.setState({
-                            marked: d
-                        })
-                        console.log("dates: "+JSON.stringify(markedDates))
-                    }}
+                    style={{alignSelf: 'center', width: 100+"%", marginTop: 16}}
+                        onDayPress={(day) => {
+                            let d = markedDates
+                            if (d[day.dateString] != null && d[day.dateString].customStyles.text.color == '#fe5f55') {
+                                d[day.dateString] = {customStyles: {
+                                    container: {
+                                        backgroundColor: '#fe5f55'
+                                    }, 
+                                    text: {
+                                        color: 'white'
+                                    }
+                                }}
+                            } else if (d[day.dateString] != null && d[day.dateString].customStyles.text.color == 'white'){
+                                d[day.dateString] = {customStyles: {
+                                    container: {
+                                        backgroundColor: '#fff'
+                                    }, 
+                                    text: {
+                                        color: '#fe5f55'
+                                    }
+                                }}
+                            }
+                            
+                            this.setState({
+                                marked: d
+                            })
+                            console.log("dates: "+JSON.stringify(markedDates))
+                        }}
 
-                    theme={{
-                        backgroundColor: '#ffffff',
-                        calendarBackground: '#ffffff',
-                        todayTextColor: '#fe5f55',
-                        arrowColor: '#fe5f55'
-                    }}
-                    //showWeekNumbers={true}
-                    //markedDates={markedDates}
-                    markingType={'custom'}
-                    //disabledByDefault={true}
-                />
-                <View style={{ marginRight: 17.5, marginLeft: 17.5, flex: 1}}>
-                    <View style={{flexDirection: "row"}}>
+                        theme={{
+                            backgroundColor: '#ffffff',
+                            calendarBackground: '#ffffff',
+                            todayTextColor: '#fe5f55',
+                            arrowColor: '#fe5f55'
+                        }}
+                        //showWeekNumbers={true}
+                        //markedDates={markedDates}
+                        markingType={'custom'}
+                        //disabledByDefault={true}
+                    />
+                <View flex style={{paddingTop: 16}}>
+                    <View row>
                         <Text style={{marginRight: 16, fontSize: 20, color: "#fe5f55"}}>25</Text>
-                        <Text numberOfLines={2}>Lisa would like to hire you to mow on May 25 for a small yard.</Text>
+                        <Text numberOfLines={2} style={{flex: 1}}>Lisa would like to hire you to mow on May 25 for a small yard.</Text>
                     </View>
-                    <View style={{flexDirection: "row", justifyContent: "space-around", width: width}}>
-                        <TouchableOpacity><Text>Accept</Text></TouchableOpacity>
-                        <TouchableOpacity><Text>Decline</Text></TouchableOpacity>
+                    <View row style={{justifyContent: "space-around", marginTop: 16}}>
+                        <TouchableOpacity><Text style={{color: "#fe5f55"}}>Accept</Text></TouchableOpacity>
+                        <TouchableOpacity><Text style={{color: "#495867"}}>Decline</Text></TouchableOpacity>
                     </View>
                 </View>
             </View>
