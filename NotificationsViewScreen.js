@@ -26,9 +26,12 @@ export default class NotificationsViewScreen extends Component {
             user: {},
             jobs: [],
             chain: {},
-            width: Dimensions.get('window').width
+            width: Dimensions.get('window').width,
+            size: 0,
+            lowerView: {day: 0, },
+            markedDates: {},
         }
-        this.onUpdate = this.onUpdate.bind(this)
+        this.putTogetherDates = this.putTogetherDates.bind(this)
     }
 
     async componentDidMount() {
@@ -37,33 +40,71 @@ export default class NotificationsViewScreen extends Component {
         this.setState({
             chain: chain,
             user: user,
+            size: chain.jobs[0].size
         })
-      }
+        console.log("putting dates together")
+        this.putTogetherDates()
+    }
+    
+    putTogetherDates() {
+        let jobs = this.state.chain.jobs
+        let dateList = {requests: [], accepted: [], declined: [], done: []}
+        let dateObjs = {}
+        jobs.map(job => {
+            console.log("new job")
+            if (job.jobStatus == 0) {
+                dateList.requests.push(job.dateOfJob)
+                dateObjs[job.dateOfJob] = {customStyles: {
+                    container: {
+                        backgroundColor: '#495867'
+                    }, 
+                    text: {
+                        color: 'white'
+                    }
+                }
+                }
+            } else if (job.jobStatus == 1) {
+                dateList.accepted.push(job.dateOfJob)
+                dateObjs[job.dateOfJob] = {customStyles: {
+                    container: {
+                        backgroundColor: '#fe5f55'
+                    }, 
+                    text: {
+                        color: 'white'
+                    }
+                }
+                }
+            } else if (job.jobStatus == 2) {
+                dateList.declined.push(job.dateOfJob)
+                dateObjs[job.dateOfJob] = {customStyles: {
+                    container: {
+                        backgroundColor: '#d3d3d3'
+                    }, 
+                    text: {
+                        color: 'white'
+                    }
+                }
+                }
+            } else if (job.jobStatus == 3) {
+                dateList.done.push(job.dateOfJob)
+                dateObjs[job.dateOfJob] = {customStyles: {
+                    container: {
+                        backgroundColor: '#0cc22d'
+                    }, 
+                    text: {
+                        color: 'white'
+                    }
+                }
+                }
+            }
+        })
+        
+        this.setState({markedDates:dateObjs})
+
+    }
 
       
-      onUpdate(action) {
-        fetch(Config.server + "/jobs/message", {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-                'authorization': 'Token '+this.state.user.token
-            },
-            body: JSON.stringify({
-                message: {
-                    employer: this.state.message.users[1]._id,
-                    employee: this.state.message.users[0]._id,
-                    sender: this.state.user._id,
-                    message: messages[0]
-                }
-            })
-        }).then((response) => response.json())
-        .then((resJSON) => {
-            let message = this.state.message
-            message.messages = resJSON
-            console.log("messages: "+JSON.stringify(message.messages))
-            this.setState({message: message})
-        })
-      }
+      
 
     render() {
         let chain = this.state.chain
@@ -74,7 +115,6 @@ export default class NotificationsViewScreen extends Component {
         } else if (chain.pos == 0) {
             user = chain.employer
         }
-        console.log("chain: "+JSON.stringify(chain))
         var yardSize = 'S'
         if (chain.yardSize == 0){
             yardSize = 'S'
@@ -83,11 +123,14 @@ export default class NotificationsViewScreen extends Component {
         } else if (chain.yardSize == 2) {
             yardSize = 'L'
         }
-        //var price = chain.price[chain.yardSize]
         var price = 0
+        var size = this.state.size
+        if (chain.job != null) {
+            price = chain.job.jobSpecs.price[size]
+        }
         var rating = 4.5
+        let markedDates = JSON.parse(JSON.stringify(this.state.markedDates))
         
-        console.log(JSON.stringify(chain))
         return(
         <KeyboardAwareScrollView style={{flex: 1, width: 100+'%'}}>
             <View style={{marginRight: 17.5, marginLeft: 17.5, marginTop: 16}}>
@@ -100,7 +143,7 @@ export default class NotificationsViewScreen extends Component {
                     </View>
                     <View flex right>
                         <Text>{yardSize} ${price}</Text>
-                        <View style={{flexDirection: 'row', justifyContent: 'center'}}>
+                        <View style={{flexDirection: 'row', justifyContent: 'center', marginTop: 10}}>
                             <FontAwesomeIcon style={{color: '#fe5f55', marginRight: 3 }} size={25} icon={faStar} />
                             <Text style={{fontSize: 25, color: '#fe5f55'}}>{rating}</Text>
                         </View>
@@ -144,7 +187,7 @@ export default class NotificationsViewScreen extends Component {
                             arrowColor: '#fe5f55'
                         }}
                         //showWeekNumbers={true}
-                        //markedDates={markedDates}
+                        markedDates={markedDates}
                         markingType={'custom'}
                         //disabledByDefault={true}
                     />

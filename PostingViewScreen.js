@@ -121,13 +121,14 @@ export default class PostingViewScreen extends Component {
         let data = {
             _id: this.state.post._id,
             userId: this.state.post.user._id,
-            worker: "false",
-            employerId: this.state.user._id,
-            dates: dates,
-            size: this.state.yardSize
+            worker: this.state.post.user._id,
+            employer: this.state.user._id,
+            dateOfJob: dates[0],
+            size: this.state.yardSize,
+            job: this.state.post._id
         }
 
-        let server = Config.server + "/jobs/requestHired"
+        let server = Config.server + "/jobs/sendHireRequest"
         let body = JSON.stringify({
             data: data
 
@@ -136,7 +137,7 @@ export default class PostingViewScreen extends Component {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
-                //'authentication': 'Token ' + this.state.user.token
+                'authorization': 'Token ' + this.state.user.token
             },
             body: body
         })
