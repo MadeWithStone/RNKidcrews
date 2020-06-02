@@ -514,6 +514,7 @@ const profile = createStackNavigator({
 const notifications = createStackNavigator({
     Notes: NotificationsScreen,
     View: NotificationsViewScreen,
+    InitialMsg: InitialMessageScreen,
 }, { defaultNavigationOptions: Config.navBarStyles })
 
 const chats = createStackNavigator({
