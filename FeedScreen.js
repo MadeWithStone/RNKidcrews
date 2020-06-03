@@ -238,23 +238,30 @@ class FeedScreen extends Component {
             let data = await resp.json()
             for (i in data) {
                 let newJob =  new Job()
-                let lat = { latitude: data[i].location.lat, longitude: data[i].location.lng}
-                let long = { latitude: this.state.user.location.lat, longitude: this.state.user.location.lng}
-                console.log("lat: "+JSON.stringify(lat), "; long: "+JSON.stringify(long))
-                let distance = getDistance(lat, long)
-                distance = distance / 1609
-                data[i].distance = distance.toFixed(2)
-                newJob.props = data[i]
-                console.log("Job Class: "+newJob.data())
-                var maxDistance = this.state.filters.data.maxDistance
-                if (maxDistance == '') {
-                    maxDistance = 10
-                    console.log("max distance is null")
-                }
-                console.log("max distance is: "+maxDistance)
-                if (data[i].distance < maxDistance) {
+                console.log("location: "+JSON.stringify(data[i].location))
+                if (this.state.user.location != null && data[i].location != null) {
+                    let lat = { latitude: data[i].location.lat, longitude: data[i].location.lng}
+                    let long = { latitude: this.state.user.location.lat, longitude: this.state.user.location.lng}
+                    console.log("lat: "+JSON.stringify(lat), "; long: "+JSON.stringify(long))
+                    let distance = getDistance(lat, long)
+                    distance = distance / 1609
+                    data[i].distance = distance.toFixed(2)
+                    newJob.props = data[i]
+                    console.log("Job Class: "+newJob.data())
+                    var maxDistance = this.state.filters.data.maxDistance
+                    if (maxDistance == '') {
+                        maxDistance = 10
+                        console.log("max distance is null")
+                    }
+                    console.log("max distance is: "+maxDistance)
+                    if (data[i].distance < maxDistance) {
+                        jobsList.push(newJob)
+                    }
+                } else {
+                    newJob.props = data[i]
                     jobsList.push(newJob)
                 }
+                
             }
             console.log("filtering: "+this.state.filters.data.switch)
             if (this.state.filters.data.switch) {

@@ -92,10 +92,13 @@ export default class NotificationsScreen extends Component {
             let parsedNotifications = []
             for (i in notifications) {
                 if (notifications[i] != null) {
+                    console.log("user: "+notifications[i].firstName+"; "+notifications[i]._id)
                     if (notifications[i].worker._id == this.state.user._id) {
                         notifications[i].pos = 0
+                        console.log("current user is worker should show as employer")
                     } else {
                         notifications[i].pos = 1
+                        console.log("current user is employer show as worker")
                     }
                     parsedNotifications.push(notifications[i])
                 }
@@ -116,8 +119,8 @@ export default class NotificationsScreen extends Component {
         notifications.map((notification) => {
             let user = {}
             let title = ""
-            console.log("messages i: "+JSON.stringify(notification))
-            if (notification.pos = 1) {
+            console.log("current notification: "+JSON.stringify(notification))
+            if (notification.pos == 1) {
                 user = notification.worker
                 title = "Worker"
             } else {
