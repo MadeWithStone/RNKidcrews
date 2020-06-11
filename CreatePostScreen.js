@@ -28,9 +28,9 @@ export default class CreatePostScreen extends Component {
     constructor(props) {
         super(props)
         this.state = {
-            job: "BS",
+            job: "M",
             cpr: {style: styles.unchecked, value: false},
-            image: "assets/blank-profile.png",
+            image: null,
             width: Math.round(Dimensions.get('window').width),
             height: 0,
             bio: "",
@@ -52,9 +52,78 @@ export default class CreatePostScreen extends Component {
     async componentDidMount() {
         this.props.navigation.setParams({ Post: this.postJob })
         await this.load("currentUser")
+        let alertText = "You must update the following information in order to create a listing: "
+        let showAlert = false
+        if (this.state.user.address == null) {
+            alertText = alertText + "\n Address"
+            showAlert = true
+        } if (this.state.user.profileImage == null) {
+            alertText = alertText + "\n Profile Image"
+            showAlert = true
+        } if (this.state.user.age == null) {
+            alertText = alertText + "\n Age"
+            showAlert = true
+        } 
+        if (showAlert) {
+            Alert.alert(
+                "Information is Required",
+                alertText,
+                [
+                { text: "OK", onPress: () => this.props.navigation.goBack()  }
+                ],
+                { cancelable: false }
+            );
+        }
     }
 
-    postJob() {
+    async postJob() {
+        let cont = true
+        let alertText = "You must update the following profile information in order to create a listing: "
+        let showAlert = false
+        if (this.state.user.address == null) {
+            alertText = alertText + "\n Address"
+            showAlert = true
+        } if (this.state.user.profileImage == null) {
+            alertText = alertText + "\n Profile Image"
+            showAlert = true
+        } 
+        if (showAlert) {
+            cont = false
+            await Alert.alert(
+                "Information is Required",
+                alertText,
+                [
+                { text: "OK", onPress: () => {this.props.navigation.goBack(); cont = false} }
+                ],
+                { cancelable: false }
+            );
+        }
+        const arr = Object.keys(this.state.marked)
+        let alertText2 = "You must update the following fields need to be updated:"
+        let showAlert2 = false
+        if (this.state.sPrice <= 0 || this.state.mPrice <= 0 || this.state.lPrice <= 0) {
+            alertText = alertText + "\n One price is invalid"
+            showAlert = true
+        } if (this.state.bio.length < 10) {
+            alertText = alertText + "\n Bio is not long enough"
+            showAlert = true
+        } if (arr.length < 1) {
+            alertText = alertText + "\n You must add at least one available date"
+            showAlert = true
+        } 
+        
+        if (showAlert) {
+            cont = false
+            await Alert.alert(
+                "Information is Required",
+                alertText,
+                [
+                { text: "OK", onPress: () =>   cont = false}
+                ],
+                { cancelable: false }
+            );
+        }
+        if (cont) {
         this.setState({
             loading: true,
             loadingText: "Uploading Data"
@@ -66,7 +135,7 @@ export default class CreatePostScreen extends Component {
             job = "Mowing"
         }
 
-        const arr = Object.keys(this.state.marked)
+        
         console.log("user: "+this.state.user)
 
         let date = new Date()
@@ -86,123 +155,118 @@ export default class CreatePostScreen extends Component {
         console.log("day: "+ds)
         var source = { uri: this.state.image };
         let fileName = this.state.imgName
+        let post = {
+            _id: this.state.user._id,
+            dateUp: ds,
+            ratings: [],
+            jobSpecs: {
+                title: job,
+                bio: this.state.bio,
+                cpr: this.state.cpr.value,
+                price: [parseFloat(this.state.sPrice), parseFloat(this.state.mPrice), parseFloat(this.state.lPrice)],
+                available: arr,
+            }
+        }
+        if (this.state.image != null) {
+            console.log('image: '+this.state.image)
 
-        fileName = job+"_"+this.state.user._id + '.jpg'
-        source = { uri: this.state.image, fileName };
+            fileName = job+"_"+this.state.user._id + '.jpg'
+            source = { uri: this.state.image, fileName };
 
-        // You can also display the image using data:
-        // const source = { uri: 'data:image/jpeg;base64,' + response.data };
-        
+            let server = Config.server + "/jobs/image"
+            const body = new FormData()
+            let name = fileName
 
-        
+            body.append(
+                'file', {
+                uri: this.state.image,
+                type: "image/" + this.state.imgName,
+                name: name,
+            })
+            body.append(
+                '_id', this.state.user._id
+            )
 
-        /*var s3 = new AWS.S3({ accessKeyId: 'AKIAZQ2OPAJ25DM23QK4', secretAccessKey: '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', region: 'USEast' })
-        var params = { Bucket: 'kidcrews', Key: 'user_images/', ContentType: 'image/jpeg' }
-        s3.getSignedUrl('putObject', params, function (err, url) {
-            console.log('Your generated pre-signed ULR is', url)
-        })*/
+            console.log(body)
+            console.log("fetching")
+            await fetch(server, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'multipart/form-data',
+                    'authorization': 'Token ' + this.state.user.token
+                },
+                body: body
+            })
+                .then((response) => response.json())
+                .then(async (responseJSON) => {
+                    console.log(responseJSON)
+                    var data = responseJSON
+                    console.log('responseJSON: ' + data)
+                    post.jobSpecs.img = data.url
 
-        let server = Config.server + "/jobs/image"
-        //let body = this.createFormData(this.state.userImage, {})
-        const body = new FormData()
-        let name = fileName
+                })
+                .catch((error) => {
+                    alert("error")
+                    console.log("error: " + error + "; server: " + server + "; json: " + body)
+                })
+        }
 
-        body.append(
-            'file', {
-            uri: this.state.image,
-            type: "image/" + this.state.imgName,
-            name: name,
+        this.setState({
+            loading: true,
+            loadingText: "Posting"
         })
-        body.append(
-            '_id', this.state.user._id
-        )
+        
 
-        console.log(body)
+        
+
+        let server = Config.server + "/jobs/create"
+        let body = JSON.stringify({
+            job: post
+
+        })
         console.log("fetching")
         fetch(server, {
             method: 'POST',
             headers: {
-                'Content-Type': 'multipart/form-data',
-                'authorization': 'Token ' + this.state.user.token
+                'Content-Type': 'application/json',
+                'authorization': 'Token ' + this.state.user.Token
             },
             body: body
         })
-            .then((response) => response.json())
-            .then(async (responseJSON) => {
-                console.log(responseJSON)
-                var data = responseJSON
-                console.log('responseJSON: ' + data)
-                this.setState({
-                    loading: true,
-                    loadingText: "Posting"
+            .then((response) => response.status)
+            .then(async (responseStatues) => {
+                console.log("got result")
+                console.log('res: ' + responseStatues)
+                await this.setState({
+                    loading: false,
+                    loadingText: "Uploading Data"
                 })
+                const { goBack } = this.props.navigation;
+                var delayInMilliseconds = 200;
+
+                setTimeout(function() {
+                    Alert.alert(
+                        'Posted',
+                        'Your listing was posted successfully',
+                        [
+                            {text: 'OK', onPress: () => goBack()},
+                        ],
+                        {cancelable: false},
+                        );
+                    }, delayInMilliseconds);
                 
-
-                let post = {
-                    _id: this.state.user._id,
-                    dateUp: ds,
-                    ratings: [],
-                    jobSpecs: {
-                        title: job,
-                        bio: this.state.bio,
-                        cpr: this.state.cpr.value,
-                        price: [parseFloat(this.state.sPrice), parseFloat(this.state.mPrice), parseFloat(this.state.lPrice)],
-                        available: arr,
-                        img: data.url
-                    }
-                }
-
-                let server = Config.server + "/jobs/create"
-                let body = JSON.stringify({
-                    job: post
-
-                })
-                fetch(server, {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json',
-                        'authentication': 'Token ' + this.state.user.Token
-                    },
-                    body: body
-                })
-                    .then((response) => response.status)
-                    .then(async (responseStatues) => {
-                        console.log('res: ' + responseStatues)
-                        await this.setState({
-                            loading: false,
-                            loadingText: "Uploading Data"
-                        })
-                        const { goBack } = this.props.navigation;
-                        var delayInMilliseconds = 200;
-
-                        setTimeout(function() {
-                            Alert.alert(
-                                'Posted',
-                                'Your listing was posted successfully',
-                                [
-                                  {text: 'OK', onPress: () => goBack()},
-                                ],
-                                {cancelable: false},
-                              );
-                          }, delayInMilliseconds);
-                        
-                        
-                    })
-                    
-                    .catch((error) => {
-                        this.setState({
-                            loading: false,
-                            loadingText: "Uploading Data"
-                        })
-                        alert("error")
-                        console.log("error: " + error + "; server: " + server + "; json: " + body)
-                    })
-
+                
             })
+            
             .catch((error) => {
+                this.setState({
+                    loading: false,
+                    loadingText: "Uploading Data"
+                })
                 alert("error")
                 console.log("error: " + error + "; server: " + server + "; json: " + body)
             })
+        }
     }
 
     async load(key) {
@@ -281,6 +345,10 @@ export default class CreatePostScreen extends Component {
         console.log("date: "+sDate)
         let markedDates = JSON.parse(JSON.stringify(this.state.marked))
         const available = {key: 'available', color: '#fe5f55', selectedDotColor: '#495867'}
+        var source = {uri: ""}
+        if (this.state.image != null) {
+            source = {uri: this.state.image}
+        }
         
         return (
             <View>
@@ -292,15 +360,15 @@ export default class CreatePostScreen extends Component {
                     style={{width: 100+'%'}}
                     onValueChange={(itemValue, itemIndex) => {
                         this.setState({job: itemValue})
-                        if (itemIndex == 0) {
+                        /*if (itemIndex == 0) {
                             this.setState({priceTitle: "Price: (per hour)"})
                             this.setState({job: "BS"})
                             console.log(itemIndex)
-                        } else if (itemIndex == 1) {
+                        } else if (itemIndex == 1) {*/
                             this.setState({priceTitle: "Price: (per square foot)"})
                             this.setState({job: "M"})
                             console.log(itemIndex)
-                        }
+                        //}
                     }   
                     }>
                     <Picker.Item label="Babysitting" value="BS" />
@@ -376,7 +444,7 @@ export default class CreatePostScreen extends Component {
                  <View style={styles.view}>
                     <Button title="Choose Image" onPress={this.chooseImage} buttonStyle={styles.btn}/>
                     <View style={{height: 10}}/>
-                    <Image source={{uri: this.state.image}} style={{width: width, height: height}}/>
+                    <Image source={source} style={{width: width, height: height}}/>
                     <View style={{height: 10}}/>
                  </View>
                  

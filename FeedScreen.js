@@ -146,7 +146,12 @@ class FeedScreen extends Component {
         data['marked'] = this.state.marked
         data['hours'] = this.state.hours
         data['switch'] = this.state.switch
-        data['maxDistance'] = this.state.maxDistance
+        if (this.state.maxDistance == "") {
+            data['maxDistance'] = null
+        } else {
+            data['maxDistance'] = this.state.maxDistance
+        }
+        
         data['yardSize'] = this.state.yardSize
         try {
             await AsyncStorage.setItem(key, JSON.stringify(data))
@@ -160,8 +165,13 @@ class FeedScreen extends Component {
         
     }
     switcher() {
-        let s = !this.state.switch
-        this.setState({switch: s})
+        if (this.state.user.address == null) {
+            Alert.alert("You must add an address to your profile.")
+            this.setState({switch: false})
+        } else {
+            let s = !this.state.switch
+            this.setState({switch: s})
+        }
     }
 
     async componentDidMount() {
@@ -358,7 +368,9 @@ class FeedScreen extends Component {
         
         let sort = <this.changeSort />
         return (
+            
             <KeyboardAvoidingView>
+                
             <Modal
             transparent={true}
             animationType={'none'}
@@ -367,6 +379,8 @@ class FeedScreen extends Component {
                 <View style={styles.modalBackground}>
                 
                     <View style={styles.activityIndicatorWrapper}>
+                    <View style={{flexDirection: 'row'}}>
+                    <Button titleStyle={{color: "#2089dc"}} buttonStyle={{backgroundColor: "#fff"}} title="Cancel" onPress={() => this.setState({filtering: false})}/>
                     <KeyboardAwareScrollView showsVerticalScrollIndicator={false}>
                     <View>
                     <ActivityIndicator
@@ -376,12 +390,12 @@ class FeedScreen extends Component {
                         selectedValue={this.state.job}
                         style={{width: 100+'%', height: 200}}
                         onValueChange={(itemValue, itemIndex) => {
-                            this.setState({job: ""})
+                            /*this.setState({job: ""})
                             if (itemValue == "BS") {
                                 this.setState({job: "BS"})
                             } else if (itemValue == "M") {
                                 this.setState({job: "M"})
-                            }
+                            }*/
                             console.log("job: "+this.state.job)
                         }   
                     }>
@@ -400,12 +414,19 @@ class FeedScreen extends Component {
                         />
                     </View>
                     <View style={{flexDirection: "row", justifyContent: 'space-between', paddingTop: 10, paddingBottom: 10}}>
-                        <Text>Max Distance: (Miles) </Text> 
+                        <Text>Max Distance: </Text> 
                         <TextInput 
                         placeholder="miles"
-                        style={{textAlign: 'right'}}
+                        placeholderTextColor="#495867"
+                        style={{textAlign: 'right', alignSelf: "stretch", flexGrow: 1, color: "#000"}}
                         value={this.state.maxDistance}
-                        onChangeText={(maxDistance) => this.setState({maxDistance: maxDistance})}/>
+                        onChangeText={(maxDistance) => {
+                            if (this.state.user.address == null) {
+                                Alert.alert("You must add an address to your profile.")
+                                this.setState({maxDistance: null})
+                            } else {
+                                this.setState({maxDistance: maxDistance})
+                            }}}/>
                     </View>
                     <View>
                         
@@ -448,17 +469,19 @@ class FeedScreen extends Component {
                         
                     </View>
                     
-                    <View>
+                    <View style={{marginBottom: 16}}>
                         {sort}
                     </View>
+                    
+                    
+                    </View>
+                    </KeyboardAwareScrollView>
                     <Button titleStyle={{color: "#fe5f55"}} buttonStyle={{backgroundColor: "#fff"}} title="Save" onPress={async () => {
                         await this.save("filters")
                         this.downloadPosts()
                         this.setState({filtering: false})
                     }}/>
-                    <Button titleStyle={{color: "#2089dc"}} buttonStyle={{backgroundColor: "#fff"}} title="Cancel" onPress={() => this.setState({filtering: false})}/>
                     </View>
-                    </KeyboardAwareScrollView>
                     </View>
                     
                     
@@ -469,6 +492,7 @@ class FeedScreen extends Component {
                 {listings}
                 
             </ScrollView>
+            
             </KeyboardAvoidingView>
         )
     }

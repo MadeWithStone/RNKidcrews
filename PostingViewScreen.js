@@ -48,11 +48,13 @@ export default class PostingViewScreen extends Component {
         post = post.data()
         console.log("passed post: "+post)
         let oMark = {};
-        let lat = { latitude: post.location.lat, longitude: post.location.lng}
-       let long = { latitude: this.state.user.location.lat, longitude: this.state.user.location.lng}
-        let distance = getDistance(lat, long)
-        distance = distance / 1609
-        post.distance = distance.toFixed(2)
+        if (this.state.user.location != null && post.location != null) {
+            let lat = { latitude: post.location.lat, longitude: post.location.lng}
+            let long = { latitude: this.state.user.location.lat, longitude: this.state.user.location.lng}
+            let distance = getDistance(lat, long)
+            distance = distance / 1609
+            post.distance = distance.toFixed(2)
+        }
         let specs = post.jobSpecs
         console.log("specs: "+JSON.stringify(specs))
         for (d in specs.available){
@@ -110,6 +112,26 @@ export default class PostingViewScreen extends Component {
     requestHire() {
         let dates = []
         let marked = {}
+        let alertText = "You must update the following information in order to create a listing: "
+        let showAlert = false
+        if (this.state.user.address == null) {
+            alertText = alertText + "\n Address"
+            showAlert = true
+        } if (this.state.user.profileImage == null) {
+            alertText = alertText + "\n Profile Image"
+            showAlert = true
+        } 
+        if (showAlert) {
+            Alert.alert(
+                "Information is Required",
+                alertText,
+                [
+                  { text: "OK", onPress: () => this.props.navigation.goBack()  }
+                ],
+                { cancelable: false }
+              );
+        }
+        
         
         for (m in this.state.marked) {
             console.log("m: "+m)
@@ -354,7 +376,29 @@ export default class PostingViewScreen extends Component {
                     <View style={{margin: 10}}>
                         <Text style={{alignSelf: "center", color: "#fe5f55", fontSize: 20}}>Available</Text>
                         <View style={{height: 10}} />
-                        <Button onPress={() => this.props.navigation.navigate('InitialMsg', {post: this.state.post})} title={"Send Message"} buttonStyle={Config.buttonStyle} />
+                        <Button onPress={() => {
+                            let alertText = "You must update the following information in order to create a listing: "
+                            let showAlert = false
+                            if (this.state.user.address == null) {
+                                alertText = alertText + "\n Address"
+                                showAlert = true
+                            } if (this.state.user.profileImage == null) {
+                                alertText = alertText + "\n Profile Image"
+                                showAlert = true
+                            } 
+                            if (showAlert) {
+                                Alert.alert(
+                                    "Information is Required",
+                                    alertText,
+                                    [
+                                      { text: "OK", onPress: () => this.props.navigation.goBack()  }
+                                    ],
+                                    { cancelable: false }
+                                  );
+                            }
+                            
+                            this.props.navigation.navigate('InitialMsg', {post: this.state.post})
+                    }} title={"Send Message"} buttonStyle={Config.buttonStyle} />
                         <View style={{height:10}} />
                         <Button onPress={this.hire} title={"Hire"} buttonStyle={Config.buttonStyle} />
                     </View>
@@ -429,7 +473,7 @@ export default class PostingViewScreen extends Component {
                         this.requestHire()
                         this.setState({hiring: false})
                     }}/>
-                    <Button titleStyle={{color: "#2089dc"}} buttonStyle={{backgroundColor: "#fff"}} title="Cancel" onPress={() => this.setState({hiring: false})}/>
+                    <Button titleStyle={{color: "#2089dc"}} buttonStyle={{backgroundColor: "#fff"}} title="Cancel" onPress={() => {this.setState({hiring: false})}}/>
                     </KeyboardAwareScrollView>
                     </View>
                     

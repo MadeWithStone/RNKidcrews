@@ -22,7 +22,8 @@
 		BB2187D723F8F5AF0054CF9E /* JavaScriptCore.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = BB2187D523F8F5A60054CF9E /* JavaScriptCore.framework */; };
 		BB2187D823F8F85A0054CF9E /* JavaScriptCore.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = ED297162215061F000B7C4FE /* JavaScriptCore.framework */; settings = {ATTRIBUTES = (Required, ); }; };
 		BB2187E523F907850054CF9E /* LaunchScreen.xib in Resources */ = {isa = PBXBuildFile; fileRef = BB2187E323F907850054CF9E /* LaunchScreen.xib */; };
-		BB2187E823F997970054CF9E /* Launch Screen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = BB2187E623F997970054CF9E /* Launch Screen.storyboard */; };
+		BBAAE697248954FE006AD4F0 /* Launch Screen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = BBAAE695248954FE006AD4F0 /* Launch Screen.storyboard */; };
+		BBAAE699248957CF006AD4F0 /* KidcrewsLaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = BBAAE698248957CF006AD4F0 /* KidcrewsLaunchScreen.storyboard */; };
 		BCE313696583910834B0CDAE /* libPods-ReactKidcrews-tvOS.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 7D8CFC464ECFC6F54B8D6D05 /* libPods-ReactKidcrews-tvOS.a */; };
 		FFC0BA90B1081BD8EC7C965F /* libPods-ReactKidcrews-tvOSTests.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 1A3C46F3042F1905D53FDFA7 /* libPods-ReactKidcrews-tvOSTests.a */; };
 /* End PBXBuildFile section */
@@ -71,7 +72,8 @@
 		BB2187D323F8F4560054CF9E /* JavaScriptCore.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = JavaScriptCore.framework; path = Platforms/MacOSX.platform/Developer/SDKs/MacOSX10.15.sdk/System/Library/Frameworks/JavaScriptCore.framework; sourceTree = DEVELOPER_DIR; };
 		BB2187D523F8F5A60054CF9E /* JavaScriptCore.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = JavaScriptCore.framework; path = Platforms/AppleTVOS.platform/Developer/SDKs/AppleTVOS13.2.sdk/System/Library/Frameworks/JavaScriptCore.framework; sourceTree = DEVELOPER_DIR; };
 		BB2187E423F907850054CF9E /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = Base; path = ReactKidcrews/Base.lproj/LaunchScreen.xib; sourceTree = "<group>"; };
-		BB2187E723F997970054CF9E /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = "ReactKidcrews/Base.lproj/Launch Screen.storyboard"; sourceTree = "<group>"; };
+		BBAAE696248954FE006AD4F0 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = "ReactKidcrews/Base.lproj/Launch Screen.storyboard"; sourceTree = "<group>"; };
+		BBAAE698248957CF006AD4F0 /* KidcrewsLaunchScreen.storyboard */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.storyboard; path = KidcrewsLaunchScreen.storyboard; sourceTree = "<group>"; };
 		E1759FCF976418CBD5DA71AE /* libPods-ReactKidcrews.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-ReactKidcrews.a"; sourceTree = BUILT_PRODUCTS_DIR; };
 		ED297162215061F000B7C4FE /* JavaScriptCore.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = JavaScriptCore.framework; path = System/Library/Frameworks/JavaScriptCore.framework; sourceTree = SDKROOT; };
 		ED2971642150620600B7C4FE /* JavaScriptCore.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = JavaScriptCore.framework; path = Platforms/AppleTVOS.platform/Developer/SDKs/AppleTVOS12.0.sdk/System/Library/Frameworks/JavaScriptCore.framework; sourceTree = DEVELOPER_DIR; };
@@ -153,6 +155,7 @@
 		13B07FAE1A68108700A75B9A /* ReactKidcrews */ = {
 			isa = PBXGroup;
 			children = (
+				BBAAE698248957CF006AD4F0 /* KidcrewsLaunchScreen.storyboard */,
 				BB2187E323F907850054CF9E /* LaunchScreen.xib */,
 				008F07F21AC5B25A0029DE68 /* main.jsbundle */,
 				13B07FAF1A68108700A75B9A /* AppDelegate.h */,
@@ -190,7 +193,7 @@
 		83CBB9F61A601CBA00E9B192 = {
 			isa = PBXGroup;
 			children = (
-				BB2187E623F997970054CF9E /* Launch Screen.storyboard */,
+				BBAAE695248954FE006AD4F0 /* Launch Screen.storyboard */,
 				13B07FAE1A68108700A75B9A /* ReactKidcrews */,
 				832341AE1AAA6A7D00B99B32 /* Libraries */,
 				00E356EF1AD99517003FC87E /* ReactKidcrewsTests */,
@@ -358,7 +361,8 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				BB2187E823F997970054CF9E /* Launch Screen.storyboard in Resources */,
+				BBAAE697248954FE006AD4F0 /* Launch Screen.storyboard in Resources */,
+				BBAAE699248957CF006AD4F0 /* KidcrewsLaunchScreen.storyboard in Resources */,
 				BB2187E523F907850054CF9E /* LaunchScreen.xib in Resources */,
 				13B07FBF1A68108700A75B9A /* Images.xcassets in Resources */,
 			);
@@ -667,10 +671,10 @@
 			name = LaunchScreen.xib;
 			sourceTree = "<group>";
 		};
-		BB2187E623F997970054CF9E /* Launch Screen.storyboard */ = {
+		BBAAE695248954FE006AD4F0 /* Launch Screen.storyboard */ = {
 			isa = PBXVariantGroup;
 			children = (
-				BB2187E723F997970054CF9E /* Base */,
+				BBAAE696248954FE006AD4F0 /* Base */,
 			);
 			name = "Launch Screen.storyboard";
 			sourceTree = "<group>";
@@ -729,10 +733,11 @@
 			baseConfigurationReference = 45A4A07384BC86265B5697B4 /* Pods-ReactKidcrews.debug.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
-				CURRENT_PROJECT_VERSION = 10;
+				CURRENT_PROJECT_VERSION = 15;
 				DEAD_CODE_STRIPPING = NO;
 				DEVELOPMENT_TEAM = E7U922W6SF;
 				INFOPLIST_FILE = ReactKidcrews/Info.plist;
+				IPHONEOS_DEPLOYMENT_TARGET = 13.2;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				OTHER_LDFLAGS = (
 					"$(inherited)",
@@ -741,6 +746,7 @@
 				);
 				PRODUCT_BUNDLE_IDENTIFIER = com.kidcrews.RNKidcrews;
 				PRODUCT_NAME = Kidcrews;
+				TARGETED_DEVICE_FAMILY = 1;
 				VERSIONING_SYSTEM = "apple-generic";
 			};
 			name = Debug;
@@ -750,10 +756,11 @@
 			baseConfigurationReference = 7F68002B3CFDA9AB97D14741 /* Pods-ReactKidcrews.release.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
-				CURRENT_PROJECT_VERSION = 10;
+				CURRENT_PROJECT_VERSION = 15;
 				DEAD_CODE_STRIPPING = NO;
 				DEVELOPMENT_TEAM = E7U922W6SF;
 				INFOPLIST_FILE = ReactKidcrews/Info.plist;
+				IPHONEOS_DEPLOYMENT_TARGET = 13.2;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				OTHER_LDFLAGS = (
 					"$(inherited)",
@@ -762,6 +769,7 @@
 				);
 				PRODUCT_BUNDLE_IDENTIFIER = com.kidcrews.RNKidcrews;
 				PRODUCT_NAME = Kidcrews;
+				TARGETED_DEVICE_FAMILY = 1;
 				VERSIONING_SYSTEM = "apple-generic";
 			};
 			name = Release;

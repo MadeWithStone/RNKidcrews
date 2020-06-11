@@ -1,5 +1,5 @@
 import React, { Component } from 'react'
-import { View, Text, TextInput, StyleSheet, ScrollView } from 'react-native'
+import { View, Text, TextInput, StyleSheet, ScrollView, Alert } from 'react-native'
 import { Button } from 'react-native-elements'
 import { createStackNavigator, createAppContainer } from "react-navigation";
 import AsyncStorage from '@react-native-community/async-storage'
@@ -23,6 +23,7 @@ export default class SignUpScreen extends Component {
             response: ""
         }
         this.signUp = this.signUp.bind(this)
+        this.save = this.save.bind(this)
     }
 
     signUp() {
@@ -54,6 +55,18 @@ export default class SignUpScreen extends Component {
                     } else if (responseStatus == 209) {
                         alert("Account already created with this email. Please sign in instead.")
                     }else {
+                        let currentUser = {}
+                        currentUser.email = this.state.email
+                        currentUser.password = this.state.pass
+                        this.save(currentUser, "currentUser")
+                        Alert.alert(
+                            "Success",
+                            "Your account was created you must now verify your email before signing in.",
+                            [
+                            { text: "OK", onPress: () => this.props.navigation.goBack()  }
+                            ],
+                            { cancelable: false }
+                        );
                         console.log("status: " + responseStatus)
                     }
 
@@ -62,6 +75,14 @@ export default class SignUpScreen extends Component {
                     alert("error")
                     console.log("error: " + error + "; server: " + server + "; json: " + body)
                 })
+        }
+    }
+
+    async save(data, key) {
+        try {
+            await AsyncStorage.setItem(key, JSON.stringify(data))
+        } catch (error) {
+            console.log("save error: " + error)
         }
     }
 
