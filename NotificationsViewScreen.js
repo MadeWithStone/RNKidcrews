@@ -4,7 +4,7 @@ import {View, Colors, Typography, Spacings} from 'react-native-ui-lib';
 import { createStackNavigator, createAppContainer, createBottomTabNavigator } from "react-navigation";
 import AsyncStorage from '@react-native-community/async-storage'
 import Config from './config'
-import { Button } from 'react-native-elements'
+import { Button, Rating, AirbnbRating } from 'react-native-elements'
 import { FontAwesomeIcon } from '@fortawesome/react-native-fontawesome'
 import {Calendar, CalendarList, Agenda} from 'react-native-calendars';
 import Moment from 'moment';
@@ -34,10 +34,13 @@ export default class NotificationsViewScreen extends Component {
             markedDates: {},
             worker: false,
             currentDate: "",
-            yardSize: 1
+            yardSize: 1,
+            newRating: 3,
         }
         this.putTogetherDates = this.putTogetherDates.bind(this)
         this.lowerViewObj = this.lowerViewObj.bind(this)
+        this.ratingCompleted = this.ratingCompleted.bind(this)
+        this.rate = this.rate.bind(this)
     }
 
     async componentDidMount() {
@@ -58,6 +61,46 @@ export default class NotificationsViewScreen extends Component {
         console.log("putting dates together")
         this.putTogetherDates()
     }
+    ratingCompleted(rating) {
+        this.setState({
+            newRating: rating
+        })
+    }
+    async rate() {
+        console.log("rating")
+        let day = new Date()
+        await fetch(Config.server+"/jobs/rate", {
+            method: "POST",
+            headers: {
+                'Content-Type': 'application/json',
+                'authorization': 'Token ' + this.state.user.token
+            },
+            body: JSON.stringify({
+                data: {
+                    job: this.state.chain.job._id,
+                    rating: this.state.newRating,
+                    hireJob: this.state.currentDate,
+                    date: Moment(day).format(),
+                    chain: this.state.chain._id
+                }
+            })
+        }).then((response) => response.json())
+        .then((resJson) => {
+            let updatedJobs = resJson.jobs
+            let updatedChain = this.state.chain
+            updatedChain.jobs = updatedJobs
+            
+            var updatedCurrentJob = {}
+            updatedChain.jobs.map(j => {
+                if (j._id == this.state.currentJob._id) {
+                    updatedCurrentJob = j
+                }
+            })
+            console.log("updatedChain: "+JSON.stringify(updatedChain.worker))
+            this.setState({chain: updatedChain, currentJob: updatedCurrentJob})
+            this.putTogetherDates()
+        })
+      }
     
     putTogetherDates() {
         let jobs = this.state.chain.jobs
@@ -169,7 +212,7 @@ export default class NotificationsViewScreen extends Component {
                                 <Text numberOfLines={2} style={{flex: 1}}>{this.state.chain.worker.firstName} {this.state.chain.worker.lastName} finished mowing your {yardSize} yard on {Moment(job.dateOfJob).format('MMMM D')}.</Text>
                             </View>
                             <View row style={{justifyContent: "space-around", marginTop: 16}}>
-                                <TouchableOpacity><Text style={{color: "#fe5f55"}}>Rate</Text></TouchableOpacity>
+                                <TouchableOpacity onPress={() => this.rate()}><Text style={{color: "#fe5f55"}}>Rate</Text></TouchableOpacity>
                             </View>
                         </View>)
                 }
@@ -217,8 +260,24 @@ export default class NotificationsViewScreen extends Component {
                                 <Text style={{marginRight: 16, fontSize: 20, color: "#fe5f55"}}>{Moment(job.dateOfJob).format('D')}</Text>
                                 <Text numberOfLines={2} style={{flex: 1}}>You finished a job to mow {this.state.chain.employer.firstName} {this.state.chain.employer.lastName}'s {yardSize} yard on {Moment(job.dateOfJob).format('MMMM D')}.</Text>
                             </View>
+                            <AirbnbRating
+                                count={5}
+                                reviews={["Terrible", "Bad", "Ok", "Fair", "Great"]}
+                                defaultRating={3}
+                                size={20}
+                                color={"#fe5f55"}
+                                onFinishRating={this.ratingCompleted}
+                                />
                             <View row style={{justifyContent: "space-around", marginTop: 16}}>
-                                <TouchableOpacity><Text style={{color: "#fe5f55"}}>Rate</Text></TouchableOpacity>
+                                
+
+                                
+
+                                
+
+
+                                
+                                <TouchableOpacity onPress={() => this.rate()}><Text style={{color: "#fe5f55"}}>Rate</Text></TouchableOpacity>
                             </View>
                         </View>)
                 }
